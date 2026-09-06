@@ -1,10 +1,12 @@
 package com.mr10.vello.ui.chat
 
+import android.Manifest
 import androidx.compose.animation.*
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -21,9 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -34,6 +40,8 @@ import com.mr10.vello.data.model.Message
 import com.mr10.vello.data.model.MessageStatus
 import com.mr10.vello.ui.auth.AuthViewModel
 import com.mr10.vello.ui.theme.*
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -51,12 +59,14 @@ fun ChatDetailScreen(
     val currentUser by authViewModel.currentUser.collectAsState()
     var inputText by remember { mutableStateOf("") }
     var showAttachmentMenu by remember { mutableStateOf(false) }
+    var reactionMessageId by remember { mutableStateOf<String?>(null) }
+    
     val listState = rememberLazyListState()
 
     val callPermissionsState = rememberMultiplePermissionsState(
         listOf(
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.RECORD_AUDIO
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
         )
     )
 
@@ -94,13 +104,7 @@ fun ChatDetailScreen(
                                 style = MaterialTheme.typography.titleMedium,
                                 color = Color.White
                             )
-                            AnimatedContent(targetState = isTyping) { typing ->
-                                Text(
-                                    text = if (typing) "typing..." else "online",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
-                            }
+                            TypingIndicator(isTyping)
                         }
                     }
                 },
@@ -125,7 +129,7 @@ fun ChatDetailScreen(
                     IconButton(onClick = {}) { Icon(Icons.Default.MoreVert, null, tint = Color.White) }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    containerColor = VelloPrimaryContainer,
                     titleContentColor = Color.White
                 )
             )
@@ -148,43 +152,51 @@ fun ChatDetailScreen(
             )
         }
     ) { innerPadding ->
-        if (showAttachmentMenu) {
-            AttachmentMenu(
-                onDismiss = { showAttachmentMenu = false },
-                onItemClick = { 
-                    showAttachmentMenu = false
-                    // Handle attachment selection
-                }
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(WhatsAppBackgroundLight)
-        ) {
-            // Optional: Add wallpaper pattern here if available as resource
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            if (showAttachmentMenu) {
+                AttachmentMenu(
+                    onDismiss = { showAttachmentMenu = false },
+                    onItemClick = { 
+                        showAttachmentMenu = false
+                    }
+                )
+            }
             
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(WhatsAppBackgroundLight)
             ) {
-                items(messages, key = { it.id ?: it.hashCode() }) { message ->
-                    val isMine = message.senderId == currentUser?.id
-                    
-                    var visible by remember { mutableStateOf(false) }
-                    LaunchedEffect(Unit) { visible = true }
-                    
-                    AnimatedVisibility(
-                        visible = visible,
-                        enter = slideInVertically(
-                            initialOffsetY = { 8 },
-                            animationSpec = spring(dampingRatio = 0.75f)
-                        ) + fadeIn()
-                    ) {
-                        ChatBubble(message, isMine)
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(messages, key = { it.id ?: it.hashCode() }) { message ->
+                        val isMine = message.senderId == currentUser?.id
+                        
+                        var visible by remember { mutableStateOf(false) }
+                        LaunchedEffect(Unit) { visible = true }
+                        
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInHorizontally(
+                                initialOffsetX = { if (isMine) it else -it },
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            ) + fadeIn(animationSpec = tween(500))
+                        ) {
+                            ChatBubbleWrapper(
+                                message = message, 
+                                isMine = isMine,
+                                onLongPress = { reactionMessageId = message.id },
+                                isReactionVisible = reactionMessageId == message.id,
+                                onReactionSelected = { reactionMessageId = null }
+                            )
+                        }
                     }
                 }
             }
@@ -193,9 +205,116 @@ fun ChatDetailScreen(
 }
 
 @Composable
+fun TypingIndicator(isTyping: Boolean) {
+    AnimatedContent(
+        targetState = isTyping,
+        transitionSpec = {
+            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+        }
+    ) { typing ->
+        if (typing) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "typing",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                repeat(3) { index ->
+                    val infiniteTransition = rememberInfiniteTransition()
+                    val alpha by infiniteTransition.animateFloat(
+                        initialValue = 0.2f,
+                        targetValue = 1f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(600, delayMillis = index * 200),
+                            repeatMode = RepeatMode.Reverse
+                        )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(3.dp)
+                            .padding(horizontal = 0.5.dp)
+                            .graphicsLayer(alpha = alpha)
+                            .background(Color.White, CircleShape)
+                    )
+                }
+            }
+        } else {
+            Text(
+                text = "online",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.White.copy(alpha = 0.8f)
+            )
+        }
+    }
+}
+
+@Composable
+fun ChatBubbleWrapper(
+    message: Message, 
+    isMine: Boolean,
+    onLongPress: () -> Unit,
+    isReactionVisible: Boolean,
+    onReactionSelected: (String) -> Unit
+) {
+    var offsetX by remember { mutableStateOf(0f) }
+    val animatedOffsetX by animateFloatAsState(
+        targetValue = offsetX,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+    )
+
+    Column {
+        ReactionsBar(isVisible = isReactionVisible, onReactionSelected = onReactionSelected)
+        
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = { onLongPress() }
+                    )
+                }
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures(
+                        onHorizontalDrag = { _, dragAmount ->
+                            if (!isMine && dragAmount > 0) {
+                                offsetX = (offsetX + dragAmount).coerceAtMost(80f)
+                            } else if (isMine && dragAmount < 0) {
+                                offsetX = (offsetX + dragAmount).coerceAtLeast(-80f)
+                            }
+                        },
+                        onDragEnd = { offsetX = 0f },
+                        onDragCancel = { offsetX = 0f }
+                    )
+                }
+                .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
+        ) {
+            if (animatedOffsetX != 0f) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Reply,
+                    contentDescription = "Reply",
+                    tint = WhatsAppGreen,
+                    modifier = Modifier
+                        .align(if (isMine) Alignment.CenterEnd else Alignment.CenterStart)
+                        .padding(horizontal = 16.dp)
+                        .graphicsLayer {
+                            val progress = Math.abs(animatedOffsetX) / 80f
+                            scaleX = progress
+                            scaleY = progress
+                            alpha = progress
+                            translationX = if (isMine) (1 - progress) * 20 else -(1 - progress) * 20
+                        }
+                )
+            }
+            ChatBubble(message, isMine)
+        }
+    }
+}
+
+@Composable
 fun ChatBubble(message: Message, isMine: Boolean) {
     val bubbleColor = if (isMine) WhatsAppSentBubbleLight else WhatsAppReceivedBubbleLight
-    val textColor = WhatsAppTextPrimaryLight
+    val textColor = Color.Black // Pure Black as requested
     
     // Stitch: 1.125rem (18dp) corners, 0.25rem (4dp) tail corner
     val bubbleShape = if (isMine) {
@@ -217,7 +336,7 @@ fun ChatBubble(message: Message, isMine: Boolean) {
                 .widthIn(max = 280.dp)
                 .padding(horizontal = 8.dp, vertical = 2.dp)
         ) {
-            Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
                 Text(
                     text = message.content,
                     style = MaterialTheme.typography.bodyLarge,
@@ -260,7 +379,6 @@ fun MessageStatusIcon(status: MessageStatus) {
     )
 }
 
-
 @Composable
 fun ChatInputBar(
     text: String,
@@ -292,7 +410,7 @@ fun ChatInputBar(
                 TextField(
                     value = text,
                     onValueChange = onTextChange,
-                    placeholder = { Text("Message", style = MaterialTheme.typography.bodyLarge) },
+                    placeholder = { Text("Message", style = MaterialTheme.typography.bodyLarge, color = Color.Gray) },
                     modifier = Modifier.weight(1f),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
@@ -300,7 +418,8 @@ fun ChatInputBar(
                         disabledContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                    )
+                    ),
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black)
                 )
                 IconButton(onClick = onAttachClick) { 
                     Icon(Icons.Default.AttachFile, null, tint = WhatsAppTextSecondaryLight) 
@@ -315,7 +434,7 @@ fun ChatInputBar(
         Spacer(modifier = Modifier.width(8.dp))
         FloatingActionButton(
             onClick = onSend,
-            containerColor = Color(0xFF008069),
+            containerColor = VelloSecondary,
             contentColor = Color.White,
             shape = CircleShape,
             modifier = Modifier.size(48.dp),

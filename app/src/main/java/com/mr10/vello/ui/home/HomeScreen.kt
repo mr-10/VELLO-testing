@@ -55,6 +55,8 @@ fun HomeScreen(
     onNavigateToChat: (Chat) -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToContactList: () -> Unit,
+    onNavigateToCamera: () -> Unit,
+    onNavigateToSearch: () -> Unit,
     onSignOut: () -> Unit
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -102,20 +104,27 @@ fun HomeScreen(
                 TopAppBar(
                     title = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            // In a real app, you'd use a localized string and potentially a logo image
+                            AsyncImage(
+                                model = "https://lh3.googleusercontent.com/aida-public/AB6AXuDlAq1rARYRB0iExfzLJd9XG62Wf4ncdyzhvTOcw9kplTelCyPhkbxxNJEH15ClLzvuXEv8ODAutUNOWQ5wyDOzNEvcxVLYYOiicPQIY68RtSGmoBm3E78Jpo1cKxeOiW0QeukPSF7y2Ki9PHVo5mKkRR6RPKvX-9Y7mSL5xaU0zPUU32uw-x8Hm1ISDULlUopFxmZRS2uxQDU5kYOGG5dwMV58KRPL-61G5I2O6Ie0LFoyLxDgOBO2",
+                                contentDescription = "Vello Logo",
+                                modifier = Modifier.height(32.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 "Vello",
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = Color.White,
+                                letterSpacing = (-0.5).sp
                             )
                         }
                     },
                     actions = {
-                        IconButton(onClick = { /* Camera */ }) {
+                        IconButton(onClick = onNavigateToCamera) {
                             Icon(Icons.Default.CameraAlt, contentDescription = "Camera", tint = Color.White)
                         }
-                        IconButton(onClick = { /* Search */ }) {
+                        IconButton(onClick = onNavigateToSearch) {
                             Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
                         }
                         IconButton(onClick = { /* Menu */ }) {

@@ -1,88 +1,100 @@
 package com.mr10.vello.ui.chat
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.mr10.vello.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AttachmentMenu(
     onDismiss: () -> Unit,
     onItemClick: (String) -> Unit
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
-        dragHandle = null
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(onClick = onDismiss)
+            .background(Color.Black.copy(alpha = 0.2f)),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+        // Simulating Circular Reveal with Scale + Fade + Spring
+        var visible by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) { visible = true }
+
+        AnimatedVisibility(
+            visible = visible,
+            enter = scaleIn(animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy)) + fadeIn(),
+            exit = scaleOut() + fadeOut(),
+            modifier = Modifier.padding(bottom = 80.dp, start = 16.dp, end = 16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                tonalElevation = 8.dp,
+                shadowElevation = 8.dp
             ) {
-                AttachmentItem("Document", Icons.Default.Description, Color(0xFF7F66FF), onItemClick)
-                AttachmentItem("Camera", Icons.Default.PhotoCamera, Color(0xFFFF4081), onItemClick)
-                AttachmentItem("Gallery", Icons.Default.Image, Color(0xFFC052D2), onItemClick)
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        AttachmentItem(Icons.Default.Description, "Document", Color(0xFF7F66FF), onItemClick)
+                        AttachmentItem(Icons.Default.CameraAlt, "Camera", Color(0xFFFF4599), onItemClick)
+                        AttachmentItem(Icons.Default.Image, "Gallery", Color(0xFFBB66FF), onItemClick)
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        AttachmentItem(Icons.Default.Headset, "Audio", Color(0xFFF79A2E), onItemClick)
+                        AttachmentItem(Icons.Default.LocationOn, "Location", Color(0xFF06D755), onItemClick)
+                        AttachmentItem(Icons.Default.Person, "Contact", Color(0xFF0EA5F5), onItemClick)
+                    }
+                }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                AttachmentItem("Audio", Icons.Default.Headphones, Color(0xFFFF9800), onItemClick)
-                AttachmentItem("Location", Icons.Default.LocationOn, Color(0xFF4CAF50), onItemClick)
-                AttachmentItem("Contact", Icons.Default.Person, Color(0xFF009688), onItemClick)
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                AttachmentItem("Poll", Icons.Default.Poll, Color(0xFF00BCD4), onItemClick)
-                AttachmentItem("Event", Icons.Default.Event, Color(0xFFF44336), onItemClick)
-                Spacer(modifier = Modifier.size(64.dp)) // Spacer to keep grid alignment
-            }
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
 fun AttachmentItem(
-    label: String,
     icon: ImageVector,
-    color: Color,
+    label: String,
+    backgroundColor: Color,
     onClick: (String) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(72.dp)
+        modifier = Modifier.clickable { onClick(label) }
     ) {
-        IconButton(
-            onClick = { onClick(label) },
-            modifier = Modifier
-                .size(60.dp)
-                .background(color, CircleShape)
+        Surface(
+            modifier = Modifier.size(52.dp),
+            shape = CircleShape,
+            color = backgroundColor
         ) {
-            Icon(icon, contentDescription = label, tint = Color.White)
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = label, tint = Color.White, modifier = Modifier.size(24.dp))
+            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = label, fontSize = 12.sp, color = Color.Gray)
     }
 }

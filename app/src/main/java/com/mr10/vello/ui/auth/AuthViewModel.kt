@@ -35,6 +35,10 @@ class AuthViewModel(
     private val _isNewUser = MutableStateFlow(false)
     val isNewUser: StateFlow<Boolean> = _isNewUser.asStateFlow()
 
+    fun toggleAuthMode(isSignUp: Boolean) {
+        _isNewUser.value = isSignUp
+    }
+
     private val _userProfile = MutableStateFlow<UserProfile?>(null)
     val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
 

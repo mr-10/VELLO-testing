@@ -5,27 +5,31 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr10.vello.ui.theme.WhatsAppGreen
-import com.mr10.vello.ui.theme.WhatsAppHeaderLight
+import com.mr10.vello.ui.theme.*
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtpVerificationScreen(
     identifier: String,
@@ -36,7 +40,7 @@ fun OtpVerificationScreen(
 ) {
     var otp by remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsState()
-    var timer by remember { mutableIntStateOf(60) }
+    var timer by remember { mutableIntStateOf(45) }
 
     LaunchedEffect(key1 = timer) {
         if (timer > 0) {
@@ -55,18 +59,11 @@ fun OtpVerificationScreen(
     Scaffold(
         containerColor = Color.White,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        "Verifying your email", 
-                        fontWeight = FontWeight.Bold, 
-                        fontSize = 18.sp,
-                        color = WhatsAppHeaderLight
-                    ) 
-                },
+            TopAppBar(
+                title = { Text("Verify Your Email", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = VelloOnSurface) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = WhatsAppHeaderLight)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = VelloOnSurfaceVariant)
                     }
                 },
                 actions = {
@@ -74,7 +71,7 @@ fun OtpVerificationScreen(
                         Icon(Icons.Default.MoreVert, null, tint = Color.Gray)
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
         }
     ) { padding ->
@@ -85,119 +82,145 @@ fun OtpVerificationScreen(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-            
+            // Status & Brand Moment
+            Spacer(modifier = Modifier.height(16.dp))
+            Surface(
+                color = VelloSecondary.copy(alpha = 0.1f),
+                shape = CircleShape,
+                modifier = Modifier.padding(bottom = 16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.VerifiedUser, null, tint = VelloSecondary, modifier = Modifier.size(14.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Sign In & Account Setup", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = VelloSecondary)
+                }
+            }
+
             Text(
-                text = "We have sent a verification code to",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = Color.Black
-            )
-            
-            Text(
-                text = identifier,
-                style = MaterialTheme.typography.bodyMedium,
+                text = "Check your email",
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 2.dp)
+                color = VelloOnSurface
             )
             
             Text(
-                text = "Wrong email?",
-                color = Color(0xFF027EB5),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .clickable { onBack() }
+                text = "We sent a 6-digit verification code to $identifier. Not your email? Edit email",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = VelloOnSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
+            // OTP Slots with Stitch style (rounded, dash separator)
             OtpInputField(
                 otp = otp,
                 onOtpChange = { if (it.length <= 6) otp = it }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "Enter 6-digit code",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
 
-            AnimatedVisibility(
-                visible = uiState is AuthUiState.Error,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
-                Text(
-                    text = (uiState as? AuthUiState.Error)?.message ?: "",
-                    color = Color.Red,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 16.dp)
+            // Verification Alternates
+            Column(modifier = Modifier.fillMaxWidth()) {
+                VerificationAlternateItem(
+                    icon = Icons.Default.MarkEmailRead,
+                    title = "Resend Code via Email",
+                    subtitle = "Request a new 6-digit code",
+                    trailingText = if (timer > 0) "0:${timer.toString().padStart(2, '0')}" else "Resend now",
+                    onClick = { if (timer == 0) { timer = 45; if (isEmail) viewModel.signInWithEmailOtp(identifier) else viewModel.signInWithPhone(identifier) } }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                VerificationAlternateItem(
+                    icon = Icons.Default.Link,
+                    title = "Send Magic Sign-In Link",
+                    subtitle = "Log in directly with one tap",
+                    trailingIcon = Icons.Default.ChevronRight,
+                    onClick = {}
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(bottom = 32.dp)
+            Button(
+                onClick = { viewModel.verifyOtp(otp) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = VelloPrimaryContainer,
+                    disabledContainerColor = VelloPrimaryContainer.copy(alpha = 0.5f)
+                ),
+                enabled = otp.length == 6 && uiState !is AuthUiState.Loading,
+                shape = CircleShape
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Resend code in ",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                    Text(
-                        text = "${timer}s",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = if (timer > 0) Color.Gray else WhatsAppGreen,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.clickable(enabled = timer == 0) {
-                            timer = 60
-                            if (isEmail) viewModel.signInWithEmailOtp(identifier) else viewModel.signInWithPhone(identifier)
-                        }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = { viewModel.verifyOtp(otp) },
-                    modifier = Modifier
-                        .width(150.dp)
-                        .height(44.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = WhatsAppGreen,
-                        disabledContainerColor = Color(0xFFE9EDEF)
-                    ),
-                    enabled = otp.length == 6 && uiState !is AuthUiState.Loading,
-                    shape = RoundedCornerShape(4.dp),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
-                ) {
-                    if (uiState is AuthUiState.Loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        AnimatedVisibility(visible = otp.length == 6) {
-                            Text("VERIFY", fontWeight = FontWeight.Bold)
-                        }
-                        if (otp.length < 6) {
-                            Text("VERIFY", fontWeight = FontWeight.Bold, color = Color.Gray)
-                        }
+                if (uiState is AuthUiState.Loading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                } else {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Verify & Continue", fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, null, modifier = Modifier.size(18.dp))
                     }
                 }
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+fun VerificationAlternateItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    trailingText: String? = null,
+    trailingIcon: ImageVector? = null,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        color = Color(0xFFF0F2F5)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                modifier = Modifier.size(36.dp),
+                shape = CircleShape,
+                color = Color.White.copy(alpha = 0.5f)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(icon, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+                }
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = VelloOnSurface)
+                Text(subtitle, fontSize = 12.sp, color = VelloOnSurfaceVariant)
+            }
+            if (trailingText != null) {
+                Surface(
+                    color = Color.White,
+                    shape = CircleShape
+                ) {
+                    Text(
+                        trailingText, 
+                        fontSize = 12.sp, 
+                        color = Color.Gray, 
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    )
+                }
+            }
+            if (trailingIcon != null) {
+                Icon(trailingIcon, null, tint = VelloSecondary, modifier = Modifier.size(20.dp))
             }
         }
     }
@@ -230,37 +253,40 @@ fun OtpInputField(
                     
                     Column(
                         modifier = Modifier
-                            .width(40.dp)
-                            .height(50.dp),
+                            .weight(1f)
+                            .height(56.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isFocused) Color.White else Color(0xFFF0F2F5))
+                            .then(if (isFocused) Modifier.shadow(4.dp, RoundedCornerShape(8.dp)) else Modifier),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = char,
-                            style = MaterialTheme.typography.headlineMedium.copy(
+                        if (isFocused && char.isEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .width(2.dp)
+                                    .height(20.dp)
+                                    .background(VelloSecondary)
+                            )
+                        } else {
+                            Text(
+                                text = if (char.isEmpty()) "—" else char,
+                                style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            ),
-                            textAlign = TextAlign.Center
-                        )
+                                color = if (char.isEmpty()) VelloOnSurfaceVariant else VelloOnSurface
+                            )
+                        }
                         Spacer(modifier = Modifier.height(4.dp))
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .width(20.dp)
                                 .height(2.dp)
-                                .background(if (isFocused) WhatsAppGreen else Color(0xFFE9EDEF))
+                                .background(if (isFocused) VelloSecondary else if (char.isNotEmpty()) VelloPrimaryContainer else Color.Transparent)
                         )
                     }
                     
                     if (index == 2) {
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Box(
-                            modifier = Modifier
-                                .width(8.dp)
-                                .height(2.dp)
-                                .background(Color(0xFFE9EDEF))
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("-", fontSize = 18.sp, color = Color.Gray, modifier = Modifier.padding(horizontal = 4.dp))
                     }
                 }
             }

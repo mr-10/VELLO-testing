@@ -12,9 +12,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 11
-        // v9.4.1: Stitch UI Integration & Production Finalization
-        versionName = "9.4.1"
+        versionCode = 14
+        // v9.6.0: Full UI Suite (Missing screens) + WhatsApp High-Fidelity Animations
+        versionName = "9.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

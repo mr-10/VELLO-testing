@@ -39,4 +39,31 @@ sealed interface NavKey : BaseNavKey {
 
     @Serializable
     data object Communities : NavKey
+
+    @Serializable
+    data object AccountSettings : NavKey
+
+    @Serializable
+    data object PrivacySettings : NavKey
+
+    @Serializable
+    data object AvatarPersona : NavKey
+
+    @Serializable
+    data object ChatSettings : NavKey
+
+    @Serializable
+    data object NotificationSettings : NavKey
+
+    @Serializable
+    data object StorageData : NavKey
+
+    @Serializable
+    data object Help : NavKey
+
+    @Serializable
+    data object Camera : NavKey
+
+    @Serializable
+    data object Search : NavKey
 }

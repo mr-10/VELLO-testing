@@ -25,12 +25,9 @@ import com.mr10.vello.ui.calls.OutgoingCallScreen
 import com.mr10.vello.ui.chat.ChatDetailScreen
 import com.mr10.vello.ui.chat.ChatViewModel
 import com.mr10.vello.ui.communities.CommunitiesScreen
-import com.mr10.vello.ui.home.ContactListScreen
-import com.mr10.vello.ui.home.ContactViewModel
-import com.mr10.vello.ui.home.HomeScreen
+import com.mr10.vello.ui.home.*
 import com.mr10.vello.ui.navigation.NavKey
-import com.mr10.vello.ui.settings.ProfileEditScreen
-import com.mr10.vello.ui.settings.SettingsScreen
+import com.mr10.vello.ui.settings.*
 import com.mr10.vello.ui.theme.VelloTheme
 
 class MainActivity : ComponentActivity() {
@@ -113,6 +110,8 @@ fun MainContent() {
                         },
                         onNavigateToSettings = { backStack.add(NavKey.Settings) },
                         onNavigateToContactList = { backStack.add(NavKey.ContactList) },
+                        onNavigateToCamera = { backStack.add(NavKey.Camera) },
+                        onNavigateToSearch = { backStack.add(NavKey.Search) },
                         onSignOut = {
                             authViewModel.signOut()
                             backStack.clear()
@@ -167,7 +166,14 @@ fun MainContent() {
                     SettingsScreen(
                         viewModel = authViewModel,
                         onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) },
-                        onNavigateToProfileEdit = { backStack.add(NavKey.ProfileEdit) }
+                        onNavigateToProfileEdit = { backStack.add(NavKey.ProfileEdit) },
+                        onNavigateToAccount = { backStack.add(NavKey.AccountSettings) },
+                        onNavigateToPrivacy = { backStack.add(NavKey.PrivacySettings) },
+                        onNavigateToAvatar = { backStack.add(NavKey.AvatarPersona) },
+                        onNavigateToChats = { backStack.add(NavKey.ChatSettings) },
+                        onNavigateToNotifications = { backStack.add(NavKey.NotificationSettings) },
+                        onNavigateToStorage = { backStack.add(NavKey.StorageData) },
+                        onNavigateToHelp = { backStack.add(NavKey.Help) }
                     )
                 }
                 NavKey.ProfileEdit -> NavEntry(key) {
@@ -176,8 +182,35 @@ fun MainContent() {
                         onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) }
                     )
                 }
+                NavKey.AccountSettings -> NavEntry(key) {
+                    AccountSettingsScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
+                NavKey.PrivacySettings -> NavEntry(key) {
+                    PrivacySettingsScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
+                NavKey.AvatarPersona -> NavEntry(key) {
+                    AvatarPersonaScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
+                NavKey.ChatSettings -> NavEntry(key) {
+                    ChatSettingsScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
+                NavKey.NotificationSettings -> NavEntry(key) {
+                    NotificationSettingsScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
+                NavKey.StorageData -> NavEntry(key) {
+                    StorageDataScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
+                NavKey.Help -> NavEntry(key) {
+                    HelpScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
                 NavKey.Communities -> NavEntry(key) {
                     CommunitiesScreen()
+                }
+                NavKey.Camera -> NavEntry(key) {
+                    CameraScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                }
+                NavKey.Search -> NavEntry(key) {
+                    SearchScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
                 }
                 else -> NavEntry(key) { }
             }

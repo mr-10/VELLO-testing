@@ -2,14 +2,14 @@ package com.mr10.vello.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Vello Design System (Stitch)
+// Vello Design System (Stitch - Final Polish)
 val VelloPrimary = Color(0xFF00453D) // Dark Forest Teal
 val VelloPrimaryContainer = Color(0xFF075E54) // Primary Teal
 val VelloSecondary = Color(0xFF128C7E) // Secondary Teal
 val VelloTertiary = Color(0xFF25D366) // Vivid Emerald
 val VelloBackground = Color(0xFFF7F9FC)
-val VelloSurface = Color(0xFFF7F9FC)
-val VelloOnSurface = Color(0xFF191C1E)
+val VelloSurface = Color(0xFFFFFFFF)
+val VelloOnSurface = Color(0xFF000000) // Pure Black as requested
 val VelloOnSurfaceVariant = Color(0xFF3F4946)
 
 // WhatsApp Branding (Legacy/Compatibility)

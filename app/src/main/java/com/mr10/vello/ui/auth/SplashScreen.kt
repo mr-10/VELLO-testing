@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr10.vello.R
+import com.mr10.vello.ui.theme.VelloPrimaryContainer
 import com.mr10.vello.ui.theme.WhatsAppGreen
 import kotlinx.coroutines.delay
 
@@ -87,7 +88,8 @@ fun SplashScreen(
                 text = "MR10",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = WhatsAppGreen
+                color = VelloPrimaryContainer,
+                letterSpacing = 1.sp
             )
         }
     }

@@ -1,19 +1,18 @@
 package com.mr10.vello.ui.chat
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -27,9 +26,20 @@ fun ChatListScreen(
 ) {
     val chats by viewModel.chats.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    var selectedChatContext by remember { mutableStateOf<Chat?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadChats()
+    }
+
+    if (selectedChatContext != null) {
+        ChatContextMenu(
+            onDismiss = { selectedChatContext = null },
+            onAction = { action ->
+                // Handle action
+                selectedChatContext = null
+            }
+        )
     }
 
     if (isLoading && chats.isEmpty()) {
@@ -39,7 +49,11 @@ fun ChatListScreen(
     } else {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(chats, key = { it.id }) { chat ->
-                ChatItem(chat, onClick = { onChatClick(chat) })
+                ChatItem(
+                    chat = chat, 
+                    onClick = { onChatClick(chat) },
+                    onLongClick = { selectedChatContext = chat }
+                )
                 HorizontalDivider(
                     modifier = Modifier.padding(start = 76.dp),
                     thickness = 0.5.dp,
@@ -51,11 +65,16 @@ fun ChatListScreen(
 }
 
 @Composable
-fun ChatItem(chat: Chat, onClick: () -> Unit) {
+fun ChatItem(chat: Chat, onClick: () -> Unit, onLongClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { onClick() },
+                    onLongPress = { onLongClick() }
+                )
+            }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
