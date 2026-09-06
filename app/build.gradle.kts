@@ -12,9 +12,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 15
-        // v9.6.1: Animation Suite Final Polish & APK Update
-        versionName = "9.6.1"
+        versionCode = 17
+        // v9.7.1: Functional Settings, Real Storage, Login Notifications & Custom Sound
+        versionName = "9.7.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

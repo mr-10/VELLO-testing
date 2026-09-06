@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr10.vello.ui.theme.VelloOnSurface
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
 import com.mr10.vello.ui.theme.VelloSecondary
 
@@ -56,6 +57,7 @@ fun AvatarPersonaScreen(onBack: () -> Unit) {
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
+                color = VelloOnSurface,
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
             Spacer(modifier = Modifier.height(32.dp))

@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr10.vello.ui.theme.VelloOnSurface
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +79,7 @@ fun SettingsDetailOption(icon: ImageVector?, title: String, subtitle: String, is
                 Spacer(modifier = Modifier.width(40.dp))
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(title, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = VelloOnSurface)
                 if (subtitle.isNotEmpty()) Text(subtitle, fontSize = 14.sp, color = Color.Gray)
             }
             if (isSwitch) {

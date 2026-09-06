@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr10.vello.ui.theme.VelloOnSurface
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +65,7 @@ fun PrivacyOption(title: String, subtitle: String, isSwitch: Boolean = false) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(title, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = VelloOnSurface)
                 if (!isSwitch) Text(subtitle, fontSize = 14.sp, color = Color.Gray)
             }
             if (isSwitch) {

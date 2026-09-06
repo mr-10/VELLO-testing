@@ -1,5 +1,7 @@
 package com.mr10.vello
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,7 +32,11 @@ import com.mr10.vello.ui.communities.CommunitiesScreen
 import com.mr10.vello.ui.home.*
 import com.mr10.vello.ui.navigation.NavKey
 import com.mr10.vello.ui.settings.*
+import com.mr10.vello.ui.util.NotificationHelper
 import com.mr10.vello.ui.theme.VelloTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +50,23 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainContent() {
+    val notificationPermissionState = if (Build.VERSION.SDK_INT >= 33) {
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+    } else {
+        null
+    }
+
+    LaunchedEffect(Unit) {
+        notificationPermissionState?.let {
+            if (!it.status.isGranted) {
+                it.launchPermissionRequest()
+            }
+        }
+    }
+
     val authViewModel: AuthViewModel = viewModel()
     val chatViewModel: ChatViewModel = viewModel()
     val callingViewModel: CallingViewModel = viewModel()
@@ -56,6 +79,7 @@ fun MainContent() {
     val isProfileChecked by authViewModel.isProfileChecked.collectAsState()
     val sessionStatus by authViewModel.sessionStatus.collectAsState()
     var isSplashFinished by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    var hasNotifiedLogin by remember { mutableStateOf(false) }
 
     val initialKey: NavKey = NavKey.Splash
     val backStack = rememberNavBackStack(initialKey)
@@ -183,7 +207,14 @@ fun MainContent() {
                     )
                 }
                 NavKey.AccountSettings -> NavEntry(key) {
-                    AccountSettingsScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
+                    AccountSettingsScreen(
+                        viewModel = authViewModel,
+                        onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) },
+                        onSignOut = {
+                            backStack.clear()
+                            backStack.add(NavKey.EmailLogin)
+                        }
+                    )
                 }
                 NavKey.PrivacySettings -> NavEntry(key) {
                     PrivacySettingsScreen(onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) })
@@ -219,6 +250,12 @@ fun MainContent() {
 
     LaunchedEffect(currentUser, userProfile, isProfileChecked, isSplashFinished) {
         val current = backStack.lastOrNull() ?: return@LaunchedEffect
+
+        // Trigger Login Notification
+        if (userProfile != null && !hasNotifiedLogin) {
+            NotificationHelper.showLoginSuccessNotification(context)
+            hasNotifiedLogin = true
+        }
         
         if (current is NavKey.Splash) {
             if (isSplashFinished) {

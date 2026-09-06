@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr10.vello.ui.theme.VelloOnSurface
+import com.mr10.vello.ui.theme.VelloOnSurface
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +61,7 @@ fun HelpOption(icon: ImageVector, title: String, subtitle: String) {
             Icon(icon, null, tint = Color.Gray, modifier = Modifier.size(24.dp))
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(title, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(title, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = VelloOnSurface)
                 if (subtitle.isNotEmpty()) Text(subtitle, fontSize = 14.sp, color = Color.Gray)
             }
         }
