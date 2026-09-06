@@ -1,0 +1,13 @@
+- `[x]` Fix `UserProfile` column mapping and `AuthRepository` status
+    - `[x]` Update `UserProfile.kt` with `@SerialName`
+    - `[x]` Update `AuthRepository.kt` with `sessionStatus`
+    - `[x]` Update `AuthRepositoryImpl.kt` with `sessionStatus`
+- `[x]` Update `AuthViewModel` and `MainActivity` for routing
+    - `[x]` Update `AuthViewModel.kt` to handle `SessionStatus`
+    - `[x]` Update `MainActivity.kt` routing logic
+- `[x]` Refine Auth UI Styling
+    - `[x]` Update `EmailLoginScreen.kt` (White bg, Green button)
+    - `[x]` Update `OtpVerificationScreen.kt` (Spec alignment)
+- `[x]` Bump Version (v4.0.0)
+    - `[x]` Update `build.gradle.kts`
+- `[x]` Verify Build and Fixes

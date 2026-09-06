@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Chat Bubble Shape -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,24C38.5,24 26,34.5 26,47.5C26,54.8 29.5,61.3 35,65.8L32,78L45.5,71.5C48.2,72.5 51.1,73 54,73C69.5,73 82,62.5 82,49.5C82,36.5 69.5,26 54,26L54,24Z" />
+
+    <!-- Stylized 'V' inside the bubble -->
+    <path
+        android:fillColor="#008080"
+        android:pathData="M44,40L54,55L64,40L68,40L54,62L40,40Z" />
+
+</vector>
