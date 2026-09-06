@@ -12,9 +12,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 14
-        // v9.6.0: Full UI Suite (Missing screens) + WhatsApp High-Fidelity Animations
-        versionName = "9.6.0"
+        versionCode = 15
+        // v9.6.1: Animation Suite Final Polish & APK Update
+        versionName = "9.6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
