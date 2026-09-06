@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><title>Vello</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Roboto+Flex:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-dim": "#d8dadd", "outline-variant": "#bec9c5", "secondary-container": "#8cf1e1", "secondary-fixed-dim": "#72d8c8", "on-primary": "#ffffff", "primary": "#00453d", "surface-container-lowest": "#ffffff", "primary-fixed": "#a8f0e3", "primary-container": "#075e54", "error-container": "#ffdad6", "on-background": "#191c1e", "secondary-fixed": "#8ff4e3", "on-tertiary": "#ffffff", "tertiary-fixed": "#66ff8e", "on-primary-container": "#8dd5c8", "tertiary": "#00471c", "on-secondary-container": "#006f64", "on-secondary-fixed": "#00201c", "on-primary-fixed": "#00201c", "surface-tint": "#1c695f", "secondary": "#006b5f", "on-tertiary-fixed-variant": "#005322", "surface-container-high": "#e6e8eb", "background": "#f7f9fc", "primary-fixed-dim": "#8cd4c7", "on-surface-variant": "#3f4946", "surface-container": "#eceef1", "on-error": "#ffffff", "on-tertiary-fixed": "#002109", "inverse-primary": "#8cd4c7", "inverse-on-surface": "#eff1f4", "surface-container-low": "#f2f4f7", "surface-variant": "#e0e3e6", "surface": "#f7f9fc", "tertiary-fixed-dim": "#3de273", "on-secondary-fixed-variant": "#005047", "surface-container-highest": "#e0e3e6", "tertiary-container": "#006129", "error": "#ba1a1a", "inverse-surface": "#2d3133", "outline": "#6f7976", "on-primary-fixed-variant": "#005047", "on-surface": "#191c1e", "on-tertiary-container": "#3fe374", "on-error-container": "#93000a", "on-secondary": "#ffffff", "surface-bright": "#f7f9fc" }, borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, spacing: { "space-md": "0.75rem", "space-2xs": "0.125rem", "gutter-tablet": "1.5rem", "max-chat-width": "720px", "gutter-mobile": "1rem", "sidebar-width": "380px", "gutter-desktop": "2rem", "space-xl": "1.5rem", "chat-bubble-p": "0.625rem 0.875rem", "space-base": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-3xl": "3rem", "space-2xl": "2rem", "space-lg": "1.25rem" }, fontFamily: { "headline-sm": ["Inter"], "label-lg": ["Inter"], "label-md": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Roboto Flex"], "body-md": ["Roboto Flex"], "display-md": ["Inter"], "headline-lg": ["Inter"], "title-md": ["Inter"], "title-lg": ["Inter"], "body-sm": ["Roboto Flex"], "headline-lg-mobile": ["Inter"], "display-lg": ["Inter"], "headline-md": ["Inter"] }, fontSize: { "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "400" }], "body-md": ["14.5px", { "lineHeight": "20px", "letterSpacing": "0.015em", "fontWeight": "400" }], "display-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "title-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "title-lg": ["16px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "400" }], "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }] } } } };</script><style>@layer base { html, body { width: 100vw; margin: 0; padding: 0; } body { overscroll-behavior: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style></head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col antialiased selection:bg-secondary-container"><header class="fixed top-0 w-full z-50 bg-primary-container text-on-primary pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.06)]"><div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-md"><img alt="Vello Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlAq1rARYRB0iExfzLJd9XG62Wf4ncdyzhvTOcw9kplTelCyPhkbxxNJEH15ClLzvuXEv8ODAutUNOWQ5wyDOzNEvcxVLYYOiicPQIY68RtSGmoBm3E78Jpo1cKxeOiW0QeukPSF7y2Ki9PHVo5mKkRR6RPKvX-9Y7mSL5xaU0zPUU32uw-x8Hm1ISDULlUopFxmZRS2uxQDU5kYOGG5dwMV58KRPL-61G5I2O6Ie0LFoyLxDgOBO2"/><div class="flex flex-col"><span class="font-headline-lg-mobile text-headline-lg-mobile font-bold tracking-tight text-on-primary leading-none">Vello</span><span class="font-label-sm text-label-sm text-on-primary-container leading-tight hidden">Updates</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Camera" class="w-11 h-11 flex items-center justify-center rounded-full text-on-primary hover:bg-white/10 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[24px]">photo_camera</span></button><button aria-label="Search" class="w-11 h-11 flex items-center justify-center rounded-full text-on-primary hover:bg-white/10 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[24px]">search</span></button><button aria-label="More options" class="w-11 h-11 flex items-center justify-center rounded-full text-on-primary hover:bg-white/10 active:scale-95 transition-transform"><span class="material-symbols-outlined text-[24px]">more_vert</span></button><div class="pl-space-xs flex items-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRGBimn2oWI88uIkkGpi26vPSXXQlfjYdcqHptL8POJOhVerc419AYHSzd0_NLpQ6siBqOyCjwDOT1d6tgU1OQ5EkMD7P0JUvZ57Rbl5l6_cRT0JH9pj1wH1pz58hQ9_rdKhu2OYE7-dI2gM0ykf7RWRRdNCymE6bBMK8CVudSbju83VyUYDFtgJdEKzaT9jBGWPbFth_MhirzaPXgrAafvs3iqxL78F7DZhxmWULlQlBpDmfaj5Md"/></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-28 bg-surface min-h-screen"><div class="flex flex-col w-full relative">
+<div class="w-full filter blur-[3px] opacity-40 select-none pointer-events-none px-gutter-mobile space-y-space-md">
+<div class="flex gap-space-xs overflow-x-hidden pt-space-xs pb-space-2xs">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md font-medium">All</span>
+<span class="px-space-md py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-semibold">Unread</span>
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md">Favorites</span>
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md">Groups</span>
+</div>
+<div class="space-y-space-xs">
+<div class="flex items-center gap-space-md p-space-sm rounded-lg bg-surface-container-lowest">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex-shrink-0"></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<span class="font-title-md text-title-md text-on-surface truncate">Alex Rivera</span>
+<span class="font-label-sm text-label-sm text-outline">10:42 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Let me review the prototype updates soon.</p>
+</div>
+</div>
+<div class="flex items-center gap-space-md p-space-sm rounded-lg bg-primary-fixed/20">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold">SJ</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<span class="font-title-md text-title-md text-on-surface truncate">Sarah Jenkins</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Online</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface truncate font-medium">Sent 3 design mockups for feedback</p>
+</div>
+</div>
+<div class="flex items-center gap-space-md p-space-sm rounded-lg bg-surface-container-lowest">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex-shrink-0"></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<span class="font-title-md text-title-md text-on-surface truncate">Product Design Sync</span>
+<span class="font-label-sm text-label-sm text-outline">Yesterday</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Marcus: Final deck attached for tomorrow</p>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-40 bg-on-surface/40 backdrop-blur-sm transition-opacity duration-300" id="quick-modal-backdrop"></div>
+<div class="fixed inset-x-0 bottom-20 z-50 flex justify-center items-end px-gutter-mobile pb-safe pointer-events-none">
+<div class="pointer-events-auto w-full max-w-[390px] bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden transition-all duration-300 transform translate-y-0 scale-100 flex flex-col" id="contact-quick-card">
+<div class="relative w-full h-72 bg-surface-variant overflow-hidden group">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close up warm portrait of Sarah Jenkins, a friendly young creative product designer with short brunette hair wearing a mint green linen shirt, soft natural window light in a modern creative studio, shallow depth of field, vivid clarity, aesthetic pastel ambient tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPdtIrr0F0Y9wckZ5Ri5LmolbIgwftT-_5xy-aIjIzm61OnNFlJHGRFaiWubIR1-9HGrqzEGhBJa4LfGDFRc6w2Sk9euLRJNp5mBN1V1Jc03TirfwV8-hwAg68Ozeg_pSfbTDrxU_PzAs7SlA1doHXK2xVIRJYXK_hxCMklEMMlBqJU3x56VvhsNZJi9b_-Z570uipgE5qBNWg172-gYYs-PBjjpej6pEPUCE8yMs0GdD630sBgDbm"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute top-space-md right-space-md flex gap-space-xs">
+<button aria-label="Close Preview" class="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md text-on-primary flex items-center justify-center hover:bg-black/60 active:scale-95 transition-all" id="btn-close-modal">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="absolute bottom-space-md left-space-md right-space-md flex items-end justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-white tracking-tight font-bold drop-shadow-sm">Sarah Jenkins</h2>
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="flex items-center gap-1.5 font-label-md text-label-md text-white/90">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim shadow-[0_0_8px_#3de273]"></span>
+                Online
+              </span>
+<span class="text-white/60 text-[10px]">•</span>
+<span class="font-label-sm text-label-sm text-white/80 font-medium">Lead Product Designer</span>
+</div>
+</div>
+<div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[18px]">zoom_out_map</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-space-xs p-space-sm bg-surface-container-low">
+<button aria-label="Direct Message" class="flex flex-col items-center justify-center py-2 px-1 rounded-lg bg-surface-container-lowest text-primary hover:bg-primary/5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[22px] text-primary" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="font-label-sm text-label-sm font-semibold mt-1">Message</span>
+</button>
+<button aria-label="Audio Call" class="flex flex-col items-center justify-center py-2 px-1 rounded-lg bg-surface-container-lowest text-primary hover:bg-primary/5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[22px] text-primary" style="font-variation-settings: 'FILL' 1;">call</span>
+<span class="font-label-sm text-label-sm font-semibold mt-1">Audio</span>
+</button>
+<button aria-label="Video Call" class="flex flex-col items-center justify-center py-2 px-1 rounded-lg bg-surface-container-lowest text-primary hover:bg-primary/5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[22px] text-primary" style="font-variation-settings: 'FILL' 1;">videocam</span>
+<span class="font-label-sm text-label-sm font-semibold mt-1">Video</span>
+</button>
+<button aria-label="Full Profile Information" class="flex flex-col items-center justify-center py-2 px-1 rounded-lg bg-surface-container-lowest text-primary hover:bg-primary/5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[22px] text-primary">info</span>
+<span class="font-label-sm text-label-sm font-semibold mt-1">Info</span>
+</button>
+</div>
+<div class="p-space-md space-y-space-md max-h-[300px] overflow-y-auto">
+<div class="space-y-space-2xs">
+<span class="font-label-sm text-label-sm text-outline font-semibold uppercase tracking-wider">About</span>
+<p class="font-body-md text-body-md text-on-surface leading-snug">Exploring new design horizons 🎨✨ | Busy during work hours</p>
+<span class="font-label-sm text-label-sm text-outline">Updated 2 days ago</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">phone</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Mobile</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">+1 (555) 389-9201</span>
+</div>
+</div>
+<button aria-label="Copy phone number" class="w-8 h-8 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+<div class="space-y-space-2xs">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-outline font-semibold uppercase tracking-wider">Shared Media, Links &amp; Docs</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">148 ›</span>
+</div>
+<div class="grid grid-cols-4 gap-space-xs pt-1">
+<div class="relative aspect-square rounded-DEFAULT overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Minimalist mobile app dashboard mockup on computer display, clean user interface design with vibrant charts in emerald and teal tones, high resolution UX rendering" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxYm_qRXM_OIxz_6yVl_Fsz84G9BFREGrY-_0h0tPOu2TKESmndHW5V8YwLHxLAPolvdzUI4s4zwYajs2SOgOBV-xDjueUqh48bkBOfUfjnpyhUF2zfL0gu4DtZ9MDyQTvtUyzrAuFd22ukqca9_P_SulhB6WXHwjVbICRMhNo7AjdkNjI97eLBFzoRenNwXjuWEFxKG2KK6zQIkZN72EzYaSAzp7hwsT36Quz-VHlo0yaxGRQIkPO"/>
+</div>
+<div class="relative aspect-square rounded-DEFAULT overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Design system color palette swatches neatly arranged on a clean wooden design desk next to wireless tablet and stylus, bright studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA09U3fKQRzzTmoGmNxtLYG1DTwhQimzYuxhmqGZjwA-_gwT5Z5WX2hAS-HUaMXQ0KgXRvnwJByvGXaKixJ46H8cXUwb4D7SBS1bfbb0uibX-PI8oHxHtZDWODTE3FpC1hub0p44pCp6pJ9pwFu3IEXcwlXPzUqXHYCkJBlZGgK24-kfYaReIdSp4Hs43epE7fzCuMj4XuvBFYD2_NvkEw8QUyyBT05AyrTFuWVidaooEYHZcyAXufa"/>
+</div>
+<div class="relative aspect-square rounded-DEFAULT overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Creative moodboard with typography specimens, botanical leaves, and modern graphic design clippings pinned on a corkboard, natural bright lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlWriWNsQBAYqFiMWnYDfnAmlMn2psPdMvHNFzniNamp2FRLJ-KBbSRlHqTTzTdcEwr4VGSdIeOukNV7iE7ARnlXQ7GNe1bgs9Gjt3Awk1ccxQecA9sZq6f-R8G-_57HasbPVCzB3WTpkWwAU85zG9TRN2XIMtbWAwI0AMWmiOx3Xp0StDzMmN6RxB130CzCyMM0AgYMzLDM0vEiGNKrW0XVD8Xx0FqwvFJflpl8BRFLS-o5fbG6TB"/>
+</div>
+<div class="relative aspect-square rounded-DEFAULT bg-secondary-container/50 text-on-secondary-container flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">photo_library</span>
+<span class="font-label-sm text-label-sm font-bold mt-0.5">+145</span>
+</div>
+</div>
+</div>
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-outline font-semibold uppercase tracking-wider">Groups in common</span>
+<div class="flex items-center gap-space-sm p-space-xs rounded-lg bg-surface-container-low">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-label-md flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-title-md text-title-md text-on-surface truncate">Product Design Sync</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Marcus, Sarah, Elena, You</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm p-space-xs rounded-lg bg-surface-container-low">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-label-md flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-title-md text-title-md text-on-surface truncate">Tech Innovations Lab</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Sarah, David, Carlos, +18 more</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs pb-space-sm flex items-center justify-center gap-2 text-center text-outline">
+<span class="material-symbols-outlined text-[16px] text-tertiary">lock</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Messages and calls are end-to-end encrypted.</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+    (function() {
+      const modal = document.getElementById('contact-quick-card');
+      const backdrop = document.getElementById('quick-modal-backdrop');
+      const closeBtn = document.getElementById('btn-close-modal');
+
+      function dismiss() {
+        if (!modal || !backdrop) return;
+        modal.classList.add('translate-y-12', 'opacity-0', 'scale-95');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+          backdrop.style.display = 'none';
+          modal.parentElement.style.display = 'none';
+        }, 300);
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', dismiss);
+      }
+      if (backdrop) {
+        backdrop.addEventListener('click', dismiss);
+      }
+    })();
+  </script>
+</div></main><div class="fixed right-gutter-mobile bottom-24 z-40"><button aria-label="New Action" class="w-14 h-14 rounded-lg bg-secondary text-on-secondary shadow-[0_4px_8px_rgba(18,140,126,0.28)] flex items-center justify-center hover:brightness-110 active:scale-95 transition-all duration-200"><span class="material-symbols-outlined text-[26px]">chat</span></button></div><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container/95 backdrop-blur-xl shadow-[0_-1px_12px_rgba(0,0,0,0.04)]" data-active-classes="[&amp;&gt;div]:bg-secondary-container [&amp;&gt;div]:text-on-secondary-container font-bold text-on-surface"><div class="h-20 px-space-sm flex items-center justify-around"><a class="flex-1 flex flex-col items-center justify-center py-space-xs text-on-surface-variant hover:text-on-surface transition-colors" data-path="chats" href="#"><div class="w-16 h-8 rounded-full flex items-center justify-center mb-1 transition-all duration-200"><span class="material-symbols-outlined text-[24px]">chat</span></div><span class="font-label-md text-label-md tracking-normal">Chats</span></a><a aria-current="page" class="flex-1 flex flex-col items-center justify-center py-space-xs transition-colors relative [&amp;&gt;div]:bg-secondary-container [&amp;&gt;div]:text-on-secondary-container font-bold text-on-surface" data-path="updates" href="#"><div class="w-16 h-8 rounded-full flex items-center justify-center mb-1 relative transition-all duration-200"><span class="material-symbols-outlined text-[24px]">update</span><span class="absolute top-1 right-4 w-2.5 h-2.5 bg-tertiary-fixed-dim rounded-full"></span></div><span class="font-label-md text-label-md tracking-normal">Updates</span></a><a class="flex-1 flex flex-col items-center justify-center py-space-xs text-on-surface-variant hover:text-on-surface transition-colors" data-path="communities" href="#"><div class="w-16 h-8 rounded-full flex items-center justify-center mb-1 transition-all duration-200"><span class="material-symbols-outlined text-[24px]">groups</span></div><span class="font-label-md text-label-md tracking-normal">Communities</span></a><a class="flex-1 flex flex-col items-center justify-center py-space-xs text-on-surface-variant hover:text-on-surface transition-colors" data-path="calls" href="#"><div class="w-16 h-8 rounded-full flex items-center justify-center mb-1 transition-all duration-200"><span class="material-symbols-outlined text-[24px]">call</span></div><span class="font-label-md text-label-md tracking-normal">Calls</span></a></div></nav></body></html>

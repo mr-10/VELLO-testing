@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><title>Vello</title><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Roboto+Flex:wght@400;500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-dim": "#d8dadd", "outline-variant": "#bec9c5", "secondary-container": "#8cf1e1", "secondary-fixed-dim": "#72d8c8", "on-primary": "#ffffff", "primary": "#00453d", "surface-container-lowest": "#ffffff", "primary-fixed": "#a8f0e3", "primary-container": "#075e54", "error-container": "#ffdad6", "on-background": "#191c1e", "secondary-fixed": "#8ff4e3", "on-tertiary": "#ffffff", "tertiary-fixed": "#66ff8e", "on-primary-container": "#8dd5c8", "tertiary": "#00471c", "on-secondary-container": "#006f64", "on-secondary-fixed": "#00201c", "on-primary-fixed": "#00201c", "surface-tint": "#1c695f", "secondary": "#006b5f", "on-tertiary-fixed-variant": "#005322", "surface-container-high": "#e6e8eb", "background": "#f7f9fc", "primary-fixed-dim": "#8cd4c7", "on-surface-variant": "#3f4946", "surface-container": "#eceef1", "on-error": "#ffffff", "on-tertiary-fixed": "#002109", "inverse-primary": "#8cd4c7", "inverse-on-surface": "#eff1f4", "surface-container-low": "#f2f4f7", "surface-variant": "#e0e3e6", "surface": "#f7f9fc", "tertiary-fixed-dim": "#3de273", "on-secondary-fixed-variant": "#005047", "surface-container-highest": "#e0e3e6", "tertiary-container": "#006129", "error": "#ba1a1a", "inverse-surface": "#2d3133", "outline": "#6f7976", "on-primary-fixed-variant": "#005047", "on-surface": "#191c1e", "on-tertiary-container": "#3fe374", "on-error-container": "#93000a", "on-secondary": "#ffffff", "surface-bright": "#f7f9fc" }, borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, spacing: { "space-md": "0.75rem", "space-2xs": "0.125rem", "gutter-tablet": "1.5rem", "max-chat-width": "720px", "gutter-mobile": "1rem", "sidebar-width": "380px", "gutter-desktop": "2rem", "space-xl": "1.5rem", "chat-bubble-p": "0.625rem 0.875rem", "space-base": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-3xl": "3rem", "space-2xl": "2rem", "space-lg": "1.25rem" }, fontFamily: { "headline-sm": ["Inter"], "label-lg": ["Inter"], "label-md": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Roboto Flex"], "body-md": ["Roboto Flex"], "display-md": ["Inter"], "headline-lg": ["Inter"], "title-md": ["Inter"], "title-lg": ["Inter"], "body-sm": ["Roboto Flex"], "headline-lg-mobile": ["Inter"], "display-lg": ["Inter"], "headline-md": ["Inter"] }, fontSize: { "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "400" }], "body-md": ["14.5px", { "lineHeight": "20px", "letterSpacing": "0.015em", "fontWeight": "400" }], "display-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "title-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "title-lg": ["16px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "400" }], "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" }] } } } };</script><style>@layer base { html, body { width: 100vw; margin: 0; padding: 0; } body { overscroll-behavior: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col antialiased selection:bg-secondary-container" style="cursor: grabbing; user-select: none;"><header class="fixed top-0 w-full z-50 bg-surface/95 backdrop-blur-md text-on-surface pt-safe shadow-[0_1px_4px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-xs flex-1 min-w-0"><button aria-label="Back" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high active:scale-95 transition-all" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><h1 class="font-title-lg text-title-lg text-on-surface truncate">Verify Your Email</h1></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Help" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high active:scale-95 transition-all"><span class="material-symbols-outlined text-[22px]">more_vert</span></button></div></div></header><main class="flex flex-col relative w-full pt-16 pb-safe bg-surface min-h-screen"><div class="flex flex-col w-full px-gutter-mobile pb-space-xl">
+<!-- Status & Brand Watermark Micro-Illustration -->
+<div class="flex flex-col items-center text-center mt-space-md mb-space-lg"><div class="inline-flex items-center gap-space-xs px-space-sm py-space-2xs rounded-full bg-secondary-container/40 text-secondary font-label-sm text-label-sm mb-space-md"><span class="material-symbols-outlined text-[15px]">verified_user</span><span class="">Sign In &amp; Account Setup</span></div><div class="relative flex items-center justify-center w-16 h-16 rounded-full bg-secondary-container/40 text-primary mb-space-md shadow-sm"><span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">mail</span><span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-tertiary text-on-tertiary shadow-sm"><span class="material-symbols-outlined text-[15px]">lock</span></span></div><h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-space-xs">Check your email</h2><p class="font-body-md text-body-md text-on-surface-variant max-w-xs leading-relaxed">We sent a 6-digit verification code to <span class="font-title-md text-title-md text-on-surface whitespace-nowrap">alex.turner@example.com</span>. Not your email? <button class="text-secondary font-title-md text-title-md hover:underline inline-flex items-center gap-space-2xs align-baseline" type="button">Edit email</button></p></div>
+<!-- Auto-detection Pill Banner with Pulse Radar -->
+<div class="w-full mb-space-xl"><div class="flex items-center justify-between px-space-base py-space-sm rounded-lg bg-surface-container-low shadow-sm"><div class="flex items-center gap-space-sm min-w-0"><span class="relative flex h-3 w-3 flex-shrink-0"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-fixed-dim opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span></span><span class="font-label-md text-label-md text-on-surface-variant truncate">Magic link also sent to your inbox</span></div><a class="inline-flex items-center gap-space-2xs text-secondary font-title-md text-title-md flex-shrink-0 hover:underline" href="mailto:"><span class="material-symbols-outlined text-[18px]">open_in_new</span><span class="">Open app</span></a></div></div>
+<!-- 6-digit OTP Code Input Container -->
+<div class="flex flex-col items-center justify-center w-full mb-space-xl">
+<div class="flex items-center justify-center gap-space-xs w-full max-w-sm" id="otp-slots-container"><div class="otp-slot flex flex-col items-center justify-center flex-1 h-14 rounded-DEFAULT bg-surface-container-highest shadow-sm transition-all text-on-surface" data-index="0"><span class="font-headline-sm text-headline-sm select-none">5</span><div class="w-5 h-0.5 mt-0.5 rounded-full bg-primary-container"></div></div><div class="otp-slot flex flex-col items-center justify-center flex-1 h-14 rounded-DEFAULT bg-surface-container-highest shadow-sm transition-all text-on-surface" data-index="1"><span class="font-headline-sm text-headline-sm select-none">2</span><div class="w-5 h-0.5 mt-0.5 rounded-full bg-primary-container"></div></div><div class="otp-slot flex flex-col items-center justify-center flex-1 h-14 rounded-DEFAULT bg-surface-container-highest shadow-sm transition-all text-on-surface" data-index="2"><span class="font-headline-sm text-headline-sm select-none">9</span><div class="w-5 h-0.5 mt-0.5 rounded-full bg-primary-container"></div></div><div class="flex items-center justify-center w-2 text-outline font-headline-sm">-</div><div class="otp-slot flex flex-col items-center justify-center flex-1 h-14 rounded-DEFAULT bg-surface-container-lowest shadow-[0_0_0_2px_#006b5f,0_2px_8px_rgba(0,107,95,0.2)] transition-all text-on-surface" data-index="3"><span class="font-headline-sm text-headline-sm select-none h-6 flex items-center justify-center"><span class="inline-block w-0.5 h-5 bg-secondary animate-pulse rounded-full"></span></span><div class="w-5 h-0.5 mt-0.5 rounded-full bg-secondary"></div></div><div class="otp-slot flex flex-col items-center justify-center flex-1 h-14 rounded-DEFAULT bg-surface-container shadow-sm transition-all text-on-surface-variant" data-index="4"><span class="font-headline-sm text-headline-sm select-none">—</span><div class="w-5 h-0.5 mt-0.5 rounded-full bg-transparent"></div></div><div class="otp-slot flex flex-col items-center justify-center flex-1 h-14 rounded-DEFAULT bg-surface-container shadow-sm transition-all text-on-surface-variant" data-index="5"><span class="font-headline-sm text-headline-sm select-none">—</span><div class="w-5 h-0.5 mt-0.5 rounded-full bg-transparent"></div></div></div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-space-sm text-center">Enter 6-digit code sent to your email</p>
+</div>
+<!-- Verification Alternates & Timer Options -->
+<div class="w-full max-w-sm mx-auto flex flex-col gap-space-xs mb-space-xl"><div class="flex items-center justify-between px-space-base py-space-md rounded-lg bg-surface-container-low shadow-sm"><div class="flex items-center gap-space-md"><div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-outline"><span class="material-symbols-outlined text-[20px]">mark_email_read</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface">Resend Code via Email</span><span class="font-label-sm text-label-sm text-outline">Request a new 6-digit code</span></div></div><div class="flex items-center gap-space-2xs text-outline font-label-md text-label-md bg-surface-container px-space-sm py-space-2xs rounded-full"><span class="material-symbols-outlined text-[15px]">schedule</span><span id="email-timer" class="">0:45</span></div></div><div class="flex items-center justify-between px-space-base py-space-md rounded-lg bg-surface-container-low shadow-sm hover:bg-surface-container-high transition-colors cursor-pointer"><div class="flex items-center gap-space-md"><div class="w-9 h-9 rounded-full bg-secondary-container/40 flex items-center justify-center text-secondary"><span class="material-symbols-outlined text-[20px]">link</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface">Send Magic Sign-In Link</span><span class="font-label-sm text-label-sm text-outline">Log in directly with one tap</span></div></div><div class="flex items-center text-secondary"><span class="material-symbols-outlined text-[20px]">chevron_right</span></div></div><div class="flex flex-col items-center text-center pt-space-xs gap-space-2xs"><p class="font-label-sm text-label-sm text-outline">Didn't receive email? Check spam folder or change address</p><button class="font-title-md text-title-md text-secondary hover:underline flex items-center gap-space-2xs py-space-xs px-space-sm rounded-full active:bg-secondary-container/30 transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">help_outline</span><span class="">Need help getting code?</span></button></div></div>
+<!-- Primary Action Button -->
+<div class="w-full max-w-sm mx-auto mb-space-lg">
+<button class="w-full h-12 rounded-full bg-primary-container text-on-primary font-title-lg text-title-lg flex items-center justify-center gap-space-sm shadow-md active:scale-[0.98] transition-all duration-150 hover:brightness-105 opacity-90" id="verify-submit-btn" type="button"><span class="">Verify &amp; Continue</span><span class="material-symbols-outlined text-[20px]">arrow_forward</span></button>
+</div>
+<!-- Android / WhatsApp Authentic In-App Numeric Keypad -->
+<div class="w-full max-w-sm mx-auto pt-space-xs pb-space-sm select-none">
+<div class="grid grid-cols-3 gap-y-space-sm gap-x-space-md">
+<!-- 1 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="1" type="button">
+<span class="font-headline-md text-headline-md leading-none">1</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">&nbsp;</span>
+</button>
+<!-- 2 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="2" type="button">
+<span class="font-headline-md text-headline-md leading-none">2</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">ABC</span>
+</button>
+<!-- 3 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="3" type="button">
+<span class="font-headline-md text-headline-md leading-none">3</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">DEF</span>
+</button>
+<!-- 4 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="4" type="button">
+<span class="font-headline-md text-headline-md leading-none">4</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">GHI</span>
+</button>
+<!-- 5 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="5" type="button">
+<span class="font-headline-md text-headline-md leading-none">5</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">JKL</span>
+</button>
+<!-- 6 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="6" type="button">
+<span class="font-headline-md text-headline-md leading-none">6</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">MNO</span>
+</button>
+<!-- 7 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="7" type="button">
+<span class="font-headline-md text-headline-md leading-none">7</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">PQRS</span>
+</button>
+<!-- 8 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="8" type="button">
+<span class="font-headline-md text-headline-md leading-none">8</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">TUV</span>
+</button>
+<!-- 9 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="9" type="button">
+<span class="font-headline-md text-headline-md leading-none">9</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">WXYZ</span>
+</button>
+<!-- Empty Slot for Spacing -->
+<div class="flex items-center justify-center h-14"></div>
+<!-- 0 -->
+<button class="dial-key flex flex-col items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="0" type="button">
+<span class="font-headline-md text-headline-md leading-none">0</span>
+<span class="font-label-sm text-label-sm text-outline tracking-widest mt-space-2xs">+</span>
+</button>
+<!-- Backspace -->
+<button class="dial-key flex items-center justify-center h-14 rounded-full bg-surface-container hover:bg-surface-container-high active:bg-surface-container-highest active:scale-95 transition-all text-on-surface" data-key="backspace" type="button">
+<span class="material-symbols-outlined text-[24px]">backspace</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  (() => {
+    const enteredDigits = ['4', '8', '2'];
+    const maxDigits = 6;
+    const slots = document.querySelectorAll('#otp-slots-container .otp-slot');
+    const dialButtons = document.querySelectorAll('.dial-key');
+    const verifyBtn = document.getElementById('verify-submit-btn');
+
+    function renderSlots() {
+      const activeIdx = Math.min(enteredDigits.length, maxDigits - 1);
+
+      slots.forEach((slot, index) => {
+        const textSpan = slot.querySelector('span');
+        const underline = slot.querySelector('div');
+
+        // Reset base visual styling classes
+        slot.className = 'otp-slot flex flex-col items-center justify-center flex-1 h-14 rounded-DEFAULT transition-all';
+
+        if (index < enteredDigits.length) {
+          // Entered digit slot
+          slot.classList.add('bg-surface-container-highest', 'shadow-sm', 'text-on-surface');
+          textSpan.innerHTML = enteredDigits[index];
+          textSpan.className = 'font-headline-sm text-headline-sm select-none';
+          if (underline) {
+            underline.className = 'w-5 h-0.5 mt-0.5 rounded-full bg-primary-container';
+          }
+        } else if (index === activeIdx && enteredDigits.length < maxDigits) {
+          // Active focused slot with glow accent
+          slot.classList.add('bg-surface-container-lowest', 'shadow-[0_0_0_2px_#006b5f,0_2px_8px_rgba(0,107,95,0.2)]', 'text-on-surface');
+          textSpan.innerHTML = '<span class="inline-block w-0.5 h-5 bg-secondary animate-pulse rounded-full"></span>';
+          textSpan.className = 'font-headline-sm text-headline-sm select-none h-6 flex items-center justify-center';
+          if (underline) {
+            underline.className = 'w-5 h-0.5 mt-0.5 rounded-full bg-secondary';
+          }
+        } else {
+          // Future pending slot
+          slot.classList.add('bg-surface-container', 'shadow-sm', 'text-on-surface-variant');
+          textSpan.innerHTML = '&mdash;';
+          textSpan.className = 'font-headline-sm text-headline-sm select-none';
+          if (underline) {
+            underline.className = 'w-5 h-0.5 mt-0.5 rounded-full bg-transparent';
+          }
+        }
+      });
+
+      // Update verify button state
+      if (enteredDigits.length === maxDigits) {
+        verifyBtn.classList.remove('opacity-60');
+        verifyBtn.classList.add('shadow-lg', 'bg-tertiary-container', 'text-on-tertiary');
+      } else {
+        verifyBtn.classList.add('opacity-90');
+        verifyBtn.classList.remove('bg-tertiary-container', 'text-on-tertiary');
+        verifyBtn.classList.add('bg-primary-container', 'text-on-primary');
+      }
+    }
+
+    dialButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.key;
+        if (key === 'backspace') {
+          if (enteredDigits.length > 0) {
+            enteredDigits.pop();
+            renderSlots();
+          }
+        } else if (enteredDigits.length < maxDigits) {
+          enteredDigits.push(key);
+          renderSlots();
+        }
+      });
+    });
+
+    // Simple countdown logic for SMS and Call options
+    let smsSec = 42;
+    let callSec = 75;
+    const smsElem = document.getElementById('sms-timer');
+    const callElem = document.getElementById('call-timer');
+
+    setInterval(() => {
+      if (smsSec > 0) {
+        smsSec--;
+        const m = Math.floor(smsSec / 60);
+        const s = smsSec % 60;
+        smsElem.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+      } else {
+        smsElem.parentElement.className = 'flex items-center gap-space-2xs text-secondary font-label-md text-label-md cursor-pointer';
+        smsElem.parentElement.innerHTML = 'Resend now';
+      }
+
+      if (callSec > 0) {
+        callSec--;
+        const cm = Math.floor(callSec / 60);
+        const cs = callSec % 60;
+        callElem.textContent = `${cm}:${cs < 10 ? '0' : ''}${cs}`;
+      } else {
+        callElem.parentElement.className = 'flex items-center gap-space-2xs text-secondary font-label-md text-label-md cursor-pointer';
+        callElem.parentElement.innerHTML = 'Call now';
+      }
+    }, 1000);
+
+    renderSlots();
+  })();
+</script></main>
+
+</body></html>

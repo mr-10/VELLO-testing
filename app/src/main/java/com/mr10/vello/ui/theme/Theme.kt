@@ -12,11 +12,11 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = WhatsAppGreen,
+    primary = VelloTertiary,
     onPrimary = WhatsAppTextPrimaryDark,
     primaryContainer = WhatsAppHeaderDark,
     onPrimaryContainer = WhatsAppTextPrimaryDark,
-    secondary = WhatsAppGreen,
+    secondary = VelloSecondary,
     onSecondary = WhatsAppTextPrimaryDark,
     background = WhatsAppBackgroundDark,
     onBackground = WhatsAppTextPrimaryDark,
@@ -29,18 +29,18 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = WhatsAppHeaderLight,
+    primary = VelloPrimaryContainer,
     onPrimary = WhatsAppSurfaceLight,
-    primaryContainer = WhatsAppHeaderLight,
+    primaryContainer = VelloPrimaryContainer,
     onPrimaryContainer = WhatsAppSurfaceLight,
-    secondary = WhatsAppGreen,
+    secondary = VelloSecondary,
     onSecondary = WhatsAppSurfaceLight,
-    background = WhatsAppSurfaceLight,
-    onBackground = WhatsAppTextPrimaryLight,
-    surface = WhatsAppSurfaceLight,
-    onSurface = WhatsAppTextPrimaryLight,
+    background = VelloBackground,
+    onBackground = VelloOnSurface,
+    surface = VelloSurface,
+    onSurface = VelloOnSurface,
     surfaceVariant = WhatsAppDividerLight,
-    onSurfaceVariant = WhatsAppTextSecondaryLight,
+    onSurfaceVariant = VelloOnSurfaceVariant,
     outline = WhatsAppDividerLight,
     error = WhatsAppError
 )

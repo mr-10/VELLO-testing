@@ -12,9 +12,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 9
-        // v9.0.0: Final Auth refactor with probe-first logic (post-SQL fix)
-        versionName = "9.0.0"
+        versionCode = 11
+        // v9.4.1: Stitch UI Integration & Production Finalization
+        versionName = "9.4.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

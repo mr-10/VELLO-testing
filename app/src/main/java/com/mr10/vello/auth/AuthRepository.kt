@@ -77,17 +77,27 @@ class AuthRepository(private val supabaseClient: SupabaseClient) {
 
     /**
      * 3. VERIFY OTP CODE (FOR BOTH SIGNUP & SIGNIN)
+     * Explicitly handles Sign-Up vs Sign-In types to avoid 'otp_expired' errors.
      */
     suspend fun verifyOtpCode(emailVal: String, codeVal: String, isSignUp: Boolean): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
-            // Match the OTP type to the action
-            val targetType = if (isSignUp) OtpType.Email.SIGNUP else OtpType.Email.EMAIL
+            // Determine the correct OtpType based on whether it was a new user (SIGNUP) or existing (MAGIC_LINK)
+            val targetType = if (isSignUp) OtpType.Email.SIGNUP else OtpType.Email.MAGIC_LINK
 
-            auth.verifyEmailOtp(
-                type = targetType,
-                email = emailVal,
-                token = codeVal
-            )
+            try {
+                auth.verifyEmailOtp(
+                    type = targetType,
+                    email = emailVal,
+                    token = codeVal
+                )
+            } catch (e: Exception) {
+                // Fallback: Sometimes Supabase triggers 'email' type regardless of the flow
+                auth.verifyEmailOtp(
+                    type = OtpType.Email.EMAIL,
+                    email = emailVal,
+                    token = codeVal
+                )
+            }
             Unit
         }
     }

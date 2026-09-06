@@ -35,8 +35,10 @@ fun CallsScreen() {
                 modifier = Modifier.padding(16.dp)
             )
         }
-        items(10) { index ->
-            CallItem(index)
+        item {
+            Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                Text("No recent calls", color = Color.Gray)
+            }
         }
     }
 }
@@ -110,7 +112,7 @@ fun CallItem(index: Int) {
             Icon(
                 if (index % 3 == 0) Icons.Default.VideoCall else Icons.Default.Call,
                 contentDescription = null,
-                tint = Color(0xFF075E54)
+                tint = Color(0xFF008069)
             )
         }
     }

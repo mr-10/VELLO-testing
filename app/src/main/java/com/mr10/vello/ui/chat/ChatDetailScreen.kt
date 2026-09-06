@@ -197,21 +197,25 @@ fun ChatBubble(message: Message, isMine: Boolean) {
     val bubbleColor = if (isMine) WhatsAppSentBubbleLight else WhatsAppReceivedBubbleLight
     val textColor = WhatsAppTextPrimaryLight
     
+    // Stitch: 1.125rem (18dp) corners, 0.25rem (4dp) tail corner
+    val bubbleShape = if (isMine) {
+        RoundedCornerShape(18.dp, 18.dp, 4.dp, 18.dp)
+    } else {
+        RoundedCornerShape(4.dp, 18.dp, 18.dp, 18.dp)
+    }
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = if (isMine) Alignment.End else Alignment.Start
     ) {
         Surface(
             color = bubbleColor,
-            shape = RoundedCornerShape(
-                topStart = 8.dp,
-                topEnd = 8.dp,
-                bottomStart = if (isMine) 8.dp else 0.dp,
-                bottomEnd = if (isMine) 0.dp else 8.dp
-            ),
+            shape = bubbleShape,
             tonalElevation = 1.dp,
             shadowElevation = 0.5.dp,
-            modifier = Modifier.widthIn(max = 280.dp)
+            modifier = Modifier
+                .widthIn(max = 280.dp)
+                .padding(horizontal = 8.dp, vertical = 2.dp)
         ) {
             Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
                 Text(
@@ -311,15 +315,18 @@ fun ChatInputBar(
         Spacer(modifier = Modifier.width(8.dp))
         FloatingActionButton(
             onClick = onSend,
-            containerColor = WhatsAppGreen,
+            containerColor = Color(0xFF008069),
             contentColor = Color.White,
             shape = CircleShape,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(48.dp),
+            elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp)
         ) {
-            Icon(
-                imageVector = if (text.isEmpty()) Icons.Default.Mic else Icons.AutoMirrored.Filled.Send,
-                contentDescription = "Action"
-            )
+            AnimatedContent(targetState = text.isEmpty()) { isMic ->
+                Icon(
+                    imageVector = if (isMic) Icons.Default.Mic else Icons.AutoMirrored.Filled.Send,
+                    contentDescription = "Action"
+                )
+            }
         }
     }
 }

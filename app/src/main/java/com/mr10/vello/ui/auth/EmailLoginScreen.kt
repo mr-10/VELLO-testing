@@ -1,10 +1,12 @@
 package com.mr10.vello.ui.auth
 
 import android.util.Patterns
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.mr10.vello.ui.theme.WhatsAppGreen
 import com.mr10.vello.ui.theme.WhatsAppHeaderLight
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailLoginScreen(
     viewModel: AuthViewModel,
@@ -41,117 +44,130 @@ fun EmailLoginScreen(
     }
 
     Scaffold(
-        containerColor = Color.White
+        containerColor = Color.White,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { 
+                    Text(
+                        "Enter your email address", 
+                        fontWeight = FontWeight.Bold, 
+                        fontSize = 18.sp,
+                        color = WhatsAppHeaderLight
+                    ) 
+                },
+                actions = {
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.MoreVert, null, tint = Color.Gray)
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(top = 64.dp)
-            ) {
-                Text(
-                    text = "Welcome to Vello",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = WhatsAppHeaderLight,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
-                )
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                Text(
-                    text = "Enter your email address to get started. Carrier charges may apply.",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
-                    lineHeight = 20.sp
-                )
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = "Vello will need to verify your email address.",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black
+            )
+            
+            Text(
+                text = "What's my email?",
+                color = Color(0xFF027EB5),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 4.dp)
+            )
 
-                Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-                OutlinedTextField(
+            // Email Input Field matching WhatsApp Style
+            Column(modifier = Modifier.width(280.dp)) {
+                TextField(
                     value = email,
                     onValueChange = { email = it.trim() },
-                    placeholder = { Text("email address", color = Color.LightGray) },
+                    placeholder = { 
+                        Text(
+                            "email address", 
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            color = Color.LightGray
+                        ) 
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = WhatsAppGreen,
-                        unfocusedBorderColor = Color(0xFFE9EDEF),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = WhatsAppGreen,
+                        unfocusedIndicatorColor = Color(0xFFE9EDEF),
                         cursorColor = WhatsAppGreen
                     ),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
                 )
+            }
 
-                AnimatedVisibility(visible = uiState is AuthUiState.Error) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Carrier charges may apply",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            if (uiState is AuthUiState.Error) {
+                Text(
+                    text = (uiState as AuthUiState.Error).message,
+                    color = Color.Red,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+
+            Button(
+                onClick = { viewModel.signInWithEmailOtp(email) },
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(44.dp)
+                    .padding(bottom = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = WhatsAppGreen,
+                    disabledContainerColor = Color(0xFFE9EDEF)
+                ),
+                enabled = uiState !is AuthUiState.Loading && isEmailValid,
+                shape = RoundedCornerShape(4.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+            ) {
+                if (uiState is AuthUiState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                } else {
                     Text(
-                        text = (uiState as? AuthUiState.Error)?.message ?: "",
-                        color = Color.Red,
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(top = 8.dp)
+                        text = "NEXT",
+                        fontWeight = FontWeight.Bold,
+                        color = if (isEmailValid) Color.White else Color.Gray
                     )
                 }
             }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(bottom = 48.dp)
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        append("Read our ")
-                        withStyle(SpanStyle(color = Color(0xFF027EB5))) {
-                            append("Privacy Policy")
-                        }
-                        append(". Tap \"Agree & Continue\" to accept the ")
-                        withStyle(SpanStyle(color = Color(0xFF027EB5))) {
-                            append("Terms of Service")
-                        }
-                        append(".")
-                    },
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = { viewModel.signInWithEmailOtp(email) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = WhatsAppGreen,
-                        disabledContainerColor = WhatsAppGreen.copy(alpha = 0.5f)
-                    ),
-                    enabled = uiState !is AuthUiState.Loading && isEmailValid,
-                    shape = RoundedCornerShape(25.dp)
-                ) {
-                    if (uiState is AuthUiState.Loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        Text(
-                            text = "AGREE & CONTINUE",
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.sp
-                        )
-                    }
-                }
-            }
+            
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

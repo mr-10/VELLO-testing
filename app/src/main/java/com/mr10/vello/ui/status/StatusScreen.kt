@@ -25,7 +25,7 @@ fun StatusScreen() {
             MyStatusItem()
         }
         item {
-            PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            // PaddingValues(horizontal = 16.dp, vertical = 8.dp) // Removed buggy line
             Text(
                 text = "Recent updates",
                 fontSize = 14.sp,
@@ -34,8 +34,10 @@ fun StatusScreen() {
                 modifier = Modifier.padding(16.dp)
             )
         }
-        items(5) { index ->
-            StatusItem(index)
+        item {
+            Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                Text("No recent updates", color = Color.Gray)
+            }
         }
     }
 }
@@ -85,20 +87,24 @@ fun StatusItem(index: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { }
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Status Ring
         Surface(
             modifier = Modifier
-                .size(50.dp)
+                .size(56.dp)
                 .clip(CircleShape),
-            color = Color.LightGray,
+            color = Color.Transparent,
             border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFF25D366))
         ) {
             AsyncImage(
                 model = "https://ui-avatars.com/api/?name=Contact+$index&background=random",
                 contentDescription = null,
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .clip(CircleShape)
             )
         }
         Spacer(modifier = Modifier.width(16.dp))

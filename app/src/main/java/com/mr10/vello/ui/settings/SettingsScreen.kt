@@ -1,5 +1,6 @@
 package com.mr10.vello.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,35 +29,48 @@ import com.mr10.vello.ui.auth.AuthViewModel
 @Composable
 fun SettingsScreen(
     viewModel: AuthViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToProfileEdit: () -> Unit
 ) {
     val currentUser by viewModel.currentUser.collectAsState()
+    val profile by viewModel.userProfile.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text("Settings", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
+                actions = {
+                    IconButton(onClick = { /* Search */ }) {
+                        Icon(Icons.Default.Search, contentDescription = "Search")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black
+                )
             )
         }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(innerPadding)
         ) {
             item {
                 UserProfileSection(
-                    name = currentUser?.email?.substringBefore("@") ?: "User",
-                    status = "Hey there! I am using Vello.",
-                    imageUrl = null // Add logic to fetch profile picture if available
+                    name = profile?.name ?: currentUser?.email?.substringBefore("@") ?: "User",
+                    status = profile?.statusQuote ?: "Hey there! I am using Vello.",
+                    imageUrl = profile?.profilePictureUrl,
+                    onClick = onNavigateToProfileEdit
                 )
             }
-            item { HorizontalDivider() }
+            item { HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.5f)) }
             item {
                 SettingsItem(
                     icon = Icons.Default.Key,
@@ -113,22 +127,33 @@ fun SettingsScreen(
                     subtitle = ""
                 )
             }
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("from", fontSize = 12.sp, color = Color.Gray)
+                    Text("VELLO", fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+            }
         }
     }
 }
 
 @Composable
-fun UserProfileSection(name: String, status: String, imageUrl: String?) {
+fun UserProfileSection(name: String, status: String, imageUrl: String?, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Edit profile */ }
+            .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Surface(
             modifier = Modifier
-                .size(64.dp)
+                .size(60.dp)
                 .clip(CircleShape),
             color = Color.LightGray
         ) {
@@ -139,9 +164,12 @@ fun UserProfileSection(name: String, status: String, imageUrl: String?) {
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
-        Column {
-            Text(text = name, fontSize = 20.sp, fontWeight = FontWeight.Medium)
-            Text(text = status, fontSize = 14.sp, color = Color.Gray)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = name, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+            Text(text = status, fontSize = 14.sp, color = Color.Gray, maxLines = 1)
+        }
+        IconButton(onClick = { /* QR Code */ }) {
+            Icon(Icons.Default.QrCode, contentDescription = "QR Code", tint = Color(0xFF008069))
         }
     }
 }

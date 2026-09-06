@@ -24,10 +24,12 @@ import com.mr10.vello.ui.calls.IncomingCallScreen
 import com.mr10.vello.ui.calls.OutgoingCallScreen
 import com.mr10.vello.ui.chat.ChatDetailScreen
 import com.mr10.vello.ui.chat.ChatViewModel
+import com.mr10.vello.ui.communities.CommunitiesScreen
 import com.mr10.vello.ui.home.ContactListScreen
 import com.mr10.vello.ui.home.ContactViewModel
 import com.mr10.vello.ui.home.HomeScreen
 import com.mr10.vello.ui.navigation.NavKey
+import com.mr10.vello.ui.settings.ProfileEditScreen
 import com.mr10.vello.ui.settings.SettingsScreen
 import com.mr10.vello.ui.theme.VelloTheme
 
@@ -164,8 +166,18 @@ fun MainContent() {
                 NavKey.Settings -> NavEntry(key) {
                     SettingsScreen(
                         viewModel = authViewModel,
+                        onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) },
+                        onNavigateToProfileEdit = { backStack.add(NavKey.ProfileEdit) }
+                    )
+                }
+                NavKey.ProfileEdit -> NavEntry(key) {
+                    ProfileEditScreen(
+                        viewModel = authViewModel,
                         onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) }
                     )
+                }
+                NavKey.Communities -> NavEntry(key) {
+                    CommunitiesScreen()
                 }
                 else -> NavEntry(key) { }
             }

@@ -33,4 +33,10 @@ sealed interface NavKey : BaseNavKey {
 
     @Serializable
     data object Settings : NavKey
+
+    @Serializable
+    data object ProfileEdit : NavKey
+
+    @Serializable
+    data object Communities : NavKey
 }

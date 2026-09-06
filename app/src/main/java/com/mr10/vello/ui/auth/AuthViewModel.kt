@@ -177,7 +177,7 @@ class AuthViewModel(
         }
     }
 
-    fun setupProfile(name: String, dob: String, imageBytes: ByteArray?) {
+    fun setupProfile(name: String, dob: String, imageBytes: ByteArray?, status: String? = null) {
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             try {
@@ -186,7 +186,14 @@ class AuthViewModel(
                 if (imageBytes != null) {
                     imageUrl = profileRepository.uploadProfilePicture(userId, imageBytes)
                 }
-                val profile = UserProfile(id = userId, name = name, dob = dob, profilePictureUrl = imageUrl)
+                val currentProfile = _userProfile.value
+                val profile = UserProfile(
+                    id = userId, 
+                    name = name, 
+                    dob = dob, 
+                    profilePictureUrl = imageUrl ?: currentProfile?.profilePictureUrl,
+                    statusQuote = status ?: currentProfile?.statusQuote ?: "Hey there! I am using Vello."
+                )
                 profileRepository.updateProfile(profile)
                 _userProfile.value = profile
                 _uiState.value = AuthUiState.Success

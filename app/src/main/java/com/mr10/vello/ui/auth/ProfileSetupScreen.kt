@@ -65,10 +65,15 @@ fun ProfileSetupScreen(
         containerColor = Color.White,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Profile Info", fontWeight = FontWeight.Bold, color = WhatsAppHeaderLight) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White
-                )
+                title = { 
+                    Text(
+                        "Profile info", 
+                        fontWeight = FontWeight.Bold, 
+                        fontSize = 18.sp,
+                        color = WhatsAppHeaderLight
+                    ) 
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
             )
         }
     ) { padding ->
@@ -79,7 +84,7 @@ fun ProfileSetupScreen(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             
             Text(
                 text = "Please provide your name and an optional profile photo",
@@ -109,7 +114,7 @@ fun ProfileSetupScreen(
                     Icon(
                         Icons.Default.AddAPhoto,
                         contentDescription = null,
-                        modifier = Modifier.size(40.dp),
+                        modifier = Modifier.size(48.dp),
                         tint = Color(0xFFB1B3B5)
                     )
                 }
@@ -117,39 +122,54 @@ fun ProfileSetupScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            OutlinedTextField(
+            // Name Field (Underlined)
+            TextField(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = { if (it.length <= 25) name = it },
                 placeholder = { Text("Type your name here", color = Color.LightGray) },
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = WhatsAppGreen,
-                    unfocusedBorderColor = Color(0xFFE9EDEF),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = WhatsAppGreen,
+                    unfocusedIndicatorColor = Color(0xFFE9EDEF),
                     cursorColor = WhatsAppGreen
                 ),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp)
+                trailingIcon = {
+                    Text(
+                        text = (25 - name.length).toString(),
+                        color = Color.LightGray,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                },
+                textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            OutlinedTextField(
+            // DOB Field (Underlined)
+            TextField(
                 value = selectedDateText,
                 onValueChange = { },
-                placeholder = { Text("Date of Birth", color = Color.LightGray) },
+                placeholder = { Text("Date of Birth (Optional)", color = Color.LightGray) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { showDatePicker = true },
                 enabled = false,
-                trailingIcon = {
-                    Icon(Icons.Default.CalendarToday, contentDescription = null, tint = WhatsAppGreen)
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    disabledBorderColor = Color(0xFFE9EDEF),
+                colors = TextFieldDefaults.colors(
+                    disabledContainerColor = Color.Transparent,
+                    disabledIndicatorColor = Color(0xFFE9EDEF),
                     disabledTextColor = Color.Black,
                     disabledPlaceholderColor = Color.LightGray
                 ),
-                shape = RoundedCornerShape(12.dp)
+                trailingIcon = {
+                    IconButton(onClick = { showDatePicker = true }) {
+                        Icon(Icons.Default.CalendarToday, contentDescription = null, tint = WhatsAppGreen)
+                    }
+                },
+                textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
             )
 
             if (showDatePicker) {
@@ -196,19 +216,33 @@ fun ProfileSetupScreen(
                     viewModel.setupProfile(name, selectedDateText, bytes)
                 },
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .height(50.dp)
-                    .padding(bottom = 32.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = WhatsAppGreen),
-                enabled = name.isNotBlank() && selectedDateText.isNotBlank() && uiState !is AuthUiState.Loading,
-                shape = RoundedCornerShape(25.dp)
+                    .width(150.dp)
+                    .height(44.dp)
+                    .padding(bottom = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = WhatsAppGreen,
+                    disabledContainerColor = Color(0xFFE9EDEF)
+                ),
+                enabled = name.isNotBlank() && uiState !is AuthUiState.Loading,
+                shape = RoundedCornerShape(4.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
             ) {
                 if (uiState is AuthUiState.Loading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
                 } else {
-                    Text("NEXT", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "NEXT",
+                        fontWeight = FontWeight.Bold,
+                        color = if (name.isNotBlank()) Color.White else Color.Gray
+                    )
                 }
             }
+            
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
