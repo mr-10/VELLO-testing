@@ -6,6 +6,7 @@ Vello is a modern Android chat application inspired by WhatsApp, built using Jet
 You can find all versions of the Vello APK along with their specific release notes in the [GitHub Releases](https://github.com/mr-10/VELLO-testing/releases) section.
 
 ### Latest Version
+- **v9.9.4**: [Download APK](https://github.com/mr-10/VELLO-testing/releases/download/v9.9.4/Vello_v9.9.4.apk)
 - **v9.9.3.2**: [Download APK](https://github.com/mr-10/VELLO-testing/releases/download/v9.9.3.2/Vello.(9.9.3.2).apk)
 
 ## Features
