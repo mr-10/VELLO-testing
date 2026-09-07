@@ -12,9 +12,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 17
-        // v9.7.1: Functional Settings, Real Storage, Login Notifications & Custom Sound
-        versionName = "9.7.1"
+        versionCode = 24
+        // v9.9.3.2: Message sending fix & APK generation
+        versionName = "9.9.3.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
