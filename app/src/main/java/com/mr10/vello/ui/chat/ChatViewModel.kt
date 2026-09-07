@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.mr10.vello.data.model.Chat
 import com.mr10.vello.data.model.Message
 import com.mr10.vello.data.model.MessageStatus
+import com.mr10.vello.data.repository.AuthRepository
+import com.mr10.vello.data.repository.AuthRepositoryImpl
 import com.mr10.vello.data.repository.ChatRepository
 import com.mr10.vello.data.repository.ChatRepositoryImpl
 import kotlinx.coroutines.Job
@@ -14,10 +16,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
-    private val repository: ChatRepository = ChatRepositoryImpl()
+    private val repository: ChatRepository = ChatRepositoryImpl(),
+    private val authRepository: AuthRepository = AuthRepositoryImpl()
 ) : ViewModel() {
 
     private val _chats = MutableStateFlow<List<Chat>>(emptyList())
@@ -54,26 +58,39 @@ class ChatViewModel(
         messageObservationJob?.cancel()
         typingObservationJob?.cancel()
         _messages.value = emptyList()
-        
+
         messageObservationJob = viewModelScope.launch {
             _isLoading.value = true
             try {
-                _messages.value = repository.getMessages(chatId)
-                _isLoading.value = false
+                // 1. Register membership/update last read
+                val currentUser = authRepository.currentUser.first()
+                currentUser?.let { user ->
+                    Log.d("ChatViewModel", "Registering member ${user.id} for chat $chatId")
+                    repository.createOrUpdateChatMembers(chatId, user.id)
+                }
                 
-                repository.observeMessages(chatId).collectLatest { newMessage ->
-                    _messages.value = _messages.value + newMessage
+                // 2. Start observing BEFORE fetching to avoid race condition
+                val observationFlow = repository.observeMessages(chatId)
+                
+                // 3. Fetch history
+                val history = repository.getMessages(chatId)
+                _messages.value = history
+                _isLoading.value = false
+
+                // 4. Collect and merge new messages, avoiding duplicates
+                observationFlow.collectLatest { newMessage ->
+                    _messages.value = (_messages.value + newMessage)
+                        .distinctBy { it.id ?: it.hashCode() }
+                        .sortedBy { it.created_at }
                 }
             } catch (e: Exception) {
                 _isLoading.value = false
-                // Log or handle error
                 Log.e("ChatViewModel", "Error loading messages", e)
             }
         }
 
         typingObservationJob = viewModelScope.launch {
             repository.observeTypingStatus(chatId).collectLatest { (userId, typing) ->
-                // Typically you'd track per-user typing status, but for simplicity:
                 _isTyping.value = typing
             }
         }

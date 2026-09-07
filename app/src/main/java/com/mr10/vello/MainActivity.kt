@@ -76,7 +76,9 @@ fun MainContent() {
     }
 
     val authViewModel: AuthViewModel = viewModel()
-    val chatViewModel: ChatViewModel = viewModel()
+    val chatViewModel: ChatViewModel = viewModel {
+        ChatViewModel() // This will use default parameters which now include AuthRepositoryImpl
+    }
     val callingViewModel: CallingViewModel = viewModel()
     val context = LocalContext.current
     val contactViewModel: ContactViewModel = viewModel {

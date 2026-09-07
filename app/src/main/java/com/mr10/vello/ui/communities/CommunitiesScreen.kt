@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.mr10.vello.data.model.UserProfile
+import com.mr10.vello.ui.chat.ChatViewModel
 import com.mr10.vello.ui.components.UserProfileDetailBottomSheet
 import com.mr10.vello.ui.components.UserProfilePreviewDialog
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
@@ -32,6 +33,7 @@ import com.mr10.vello.ui.theme.VelloPrimaryContainer
 @Composable
 fun CommunitiesScreen(
     viewModel: CommunitiesViewModel = viewModel(),
+    chatViewModel: ChatViewModel = viewModel(),
     onNavigateToChat: (UserProfile) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()

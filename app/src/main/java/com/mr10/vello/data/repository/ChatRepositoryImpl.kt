@@ -48,8 +48,9 @@ class ChatRepositoryImpl : ChatRepository {
 
     override suspend fun sendMessage(message: Message) {
         try {
+            val now = Instant.now().toString()
             val messageToSend = if (message.created_at == null) {
-                message.copy(created_at = Instant.now().toString())
+                message.copy(created_at = now)
             } else {
                 message
             }
@@ -61,6 +62,21 @@ class ChatRepositoryImpl : ChatRepository {
         } catch (e: Exception) {
             Log.e("ChatRepository", "Unexpected error sending message: ${e.message}", e)
             throw e
+        }
+    }
+
+    override suspend fun createOrUpdateChatMembers(chatId: String, userId: String) {
+        try {
+            postgrest["chat_members"].upsert(
+                mapOf(
+                    "chat_id" to chatId,
+                    "user_id" to userId,
+                    "last_read_at" to Instant.now().toString()
+                )
+            )
+            Log.d("ChatRepository", "Chat member upsert successful for $chatId")
+        } catch (e: Exception) {
+            Log.e("ChatRepository", "Error upserting chat member: ${e.message}", e)
         }
     }
 

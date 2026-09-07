@@ -12,9 +12,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 24
-        // v9.9.3.2: Message sending fix & APK generation
-        versionName = "9.9.3.2"
+        versionCode = 25
+        // v9.9.4: Fix chat synchronization and membership logic
+        versionName = "9.9.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

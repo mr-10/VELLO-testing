@@ -8,6 +8,7 @@ interface ChatRepository {
     suspend fun getChats(): List<Chat>
     suspend fun getMessages(chatId: String): List<Message>
     suspend fun sendMessage(message: Message)
+    suspend fun createOrUpdateChatMembers(chatId: String, userId: String)
     fun observeMessages(chatId: String): Flow<Message>
     fun observeAllMessages(): Flow<Message>
     suspend fun sendTypingStatus(chatId: String, userId: String, isTyping: Boolean)
