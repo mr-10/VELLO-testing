@@ -18,9 +18,25 @@ import androidx.compose.ui.unit.sp
 import com.mr10.vello.ui.theme.VelloOnSurface
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import com.mr10.vello.data.local.LocalSettingsManager
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationSettingsScreen(onBack: () -> Unit) {
+fun NotificationSettingsScreen(
+    onBack: () -> Unit,
+    onNavigateToMessageSounds: () -> Unit,
+    onNavigateToRingtones: () -> Unit
+) {
+    val context = LocalContext.current
+    val settingsManager = remember { LocalSettingsManager.getInstance(context) }
+    val highPriorityEnabled by settingsManager.highPriorityEnabled.collectAsState()
+    val notificationSoundIndex by settingsManager.notificationSoundIndex.collectAsState()
+    val ringtoneIndex by settingsManager.ringtoneIndex.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -43,24 +59,53 @@ fun NotificationSettingsScreen(onBack: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
                 )
-                NotificationOption("Notification tones", "Default ringtone")
-                NotificationOption("Vibrate", "Default")
-                NotificationOption("Popup notification", "Not available")
-                NotificationOption("Light", "White")
-                NotificationOption("Use high priority notifications", "Show previews of notifications at the top of the screen", isSwitch = true)
+                NotificationOption(
+                    title = "Message notification", 
+                    subtitle = "Sound ${notificationSoundIndex + 1}",
+                    onClick = onNavigateToMessageSounds
+                )
+                NotificationOption(
+                    title = "Use high priority notifications", 
+                    subtitle = "Show previews of notifications at the top of the screen", 
+                    isSwitch = true,
+                    switchChecked = highPriorityEnabled,
+                    onSwitchChange = { settingsManager.setHighPriorityEnabled(it) }
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "Calls",
+                    fontSize = 13.sp,
+                    color = VelloPrimaryContainer,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+                )
+                NotificationOption(
+                    title = "Ringtone notification", 
+                    subtitle = "Ringtone ${ringtoneIndex + 1}",
+                    onClick = onNavigateToRingtones
+                )
             }
         }
     }
 }
 
 @Composable
-fun NotificationOption(title: String, subtitle: String, isSwitch: Boolean = false) {
+fun NotificationOption(
+    title: String, 
+    subtitle: String, 
+    isSwitch: Boolean = false,
+    switchChecked: Boolean = false,
+    onSwitchChange: (Boolean) -> Unit = {},
+    onClick: () -> Unit = {}
+) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         color = Color.White
     ) {
         Row(
-            modifier = Modifier.clickable {}.padding(16.dp),
+            modifier = Modifier.clickable { if (!isSwitch) onClick() }.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -68,7 +113,7 @@ fun NotificationOption(title: String, subtitle: String, isSwitch: Boolean = fals
                 Text(subtitle, fontSize = 14.sp, color = Color.Gray)
             }
             if (isSwitch) {
-                Switch(checked = true, onCheckedChange = {})
+                Switch(checked = switchChecked, onCheckedChange = onSwitchChange)
             }
         }
     }

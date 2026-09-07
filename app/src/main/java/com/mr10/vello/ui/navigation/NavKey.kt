@@ -35,6 +35,9 @@ sealed interface NavKey : BaseNavKey {
     data object Settings : NavKey
 
     @Serializable
+    data object SettingsSearch : NavKey
+
+    @Serializable
     data object ProfileEdit : NavKey
 
     @Serializable
@@ -47,13 +50,22 @@ sealed interface NavKey : BaseNavKey {
     data object PrivacySettings : NavKey
 
     @Serializable
-    data object AvatarPersona : NavKey
-
-    @Serializable
     data object ChatSettings : NavKey
 
     @Serializable
+    data object FontSizeSettings : NavKey
+
+    @Serializable
+    data object WallpaperSettings : NavKey
+
+    @Serializable
     data object NotificationSettings : NavKey
+
+    @Serializable
+    data object MessageNotificationSettings : NavKey
+
+    @Serializable
+    data object RingtoneSettings : NavKey
 
     @Serializable
     data object StorageData : NavKey

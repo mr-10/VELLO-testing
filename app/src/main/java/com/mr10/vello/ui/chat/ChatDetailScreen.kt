@@ -39,9 +39,16 @@ import com.mr10.vello.R
 import com.mr10.vello.data.model.Message
 import com.mr10.vello.data.model.MessageStatus
 import com.mr10.vello.ui.auth.AuthViewModel
+import com.mr10.vello.ui.calls.CallingViewModel
 import com.mr10.vello.ui.theme.*
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+
+import androidx.compose.ui.platform.LocalContext
+import com.mr10.vello.data.local.LocalSettingsManager
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -50,13 +57,19 @@ fun ChatDetailScreen(
     chatName: String,
     viewModel: ChatViewModel,
     authViewModel: AuthViewModel,
-    onBack: () -> Unit,
-    onVoiceCall: () -> Unit,
-    onVideoCall: () -> Unit
+    callingViewModel: CallingViewModel,
+    onBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    val settingsManager = remember { LocalSettingsManager.getInstance(context) }
+    val wallpaperUri by settingsManager.wallpaperUri.collectAsState()
+    val wallpaperOpacity by settingsManager.wallpaperOpacity.collectAsState()
+    val enterIsSend by settingsManager.enterIsSend.collectAsState()
+
     val messages by viewModel.messages.collectAsState()
     val isTyping by viewModel.isTyping.collectAsState()
     val currentUser by authViewModel.currentUser.collectAsState()
+    val userProfile by authViewModel.userProfile.collectAsState()
     var inputText by remember { mutableStateOf("") }
     var showAttachmentMenu by remember { mutableStateOf(false) }
     var reactionMessageId by remember { mutableStateOf<String?>(null) }
@@ -69,6 +82,22 @@ fun ChatDetailScreen(
             Manifest.permission.RECORD_AUDIO
         )
     )
+
+    fun handleCall(isVideo: Boolean) {
+        if (callPermissionsState.allPermissionsGranted) {
+            currentUser?.let { user ->
+                callingViewModel.startOutgoingCall(
+                    receiverId = chatId,
+                    receiverName = chatName,
+                    callerId = user.id,
+                    callerName = userProfile?.name ?: user.email?.substringBefore("@") ?: "User",
+                    isVideo = isVideo
+                )
+            }
+        } else {
+            callPermissionsState.launchMultiplePermissionRequest()
+        }
+    }
 
     LaunchedEffect(chatId) {
         viewModel.loadMessages(chatId)
@@ -118,14 +147,8 @@ fun ChatDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        if (callPermissionsState.allPermissionsGranted) onVideoCall()
-                        else callPermissionsState.launchMultiplePermissionRequest()
-                    }) { Icon(Icons.Default.Videocam, null, tint = Color.White) }
-                    IconButton(onClick = {
-                        if (callPermissionsState.allPermissionsGranted) onVoiceCall()
-                        else callPermissionsState.launchMultiplePermissionRequest()
-                    }) { Icon(Icons.Default.Call, null, tint = Color.White) }
+                    IconButton(onClick = { handleCall(true) }) { Icon(Icons.Default.Videocam, null, tint = Color.White) }
+                    IconButton(onClick = { handleCall(false) }) { Icon(Icons.Default.Call, null, tint = Color.White) }
                     IconButton(onClick = {}) { Icon(Icons.Default.MoreVert, null, tint = Color.White) }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -137,6 +160,7 @@ fun ChatDetailScreen(
         bottomBar = {
             ChatInputBar(
                 text = inputText,
+                enterIsSend = enterIsSend,
                 onTextChange = { 
                     inputText = it
                     currentUser?.let { user -> viewModel.setTyping(chatId, user.id, it.isNotEmpty()) }
@@ -167,6 +191,17 @@ fun ChatDetailScreen(
                     .fillMaxSize()
                     .background(WhatsAppBackgroundLight)
             ) {
+                // Wallpaper Layer
+                if (wallpaperUri != null) {
+                    AsyncImage(
+                        model = wallpaperUri,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        alpha = wallpaperOpacity
+                    )
+                }
+                
                 LazyColumn(
                     state = listState,
                     modifier = Modifier.fillMaxSize(),
@@ -382,6 +417,7 @@ fun MessageStatusIcon(status: MessageStatus) {
 @Composable
 fun ChatInputBar(
     text: String,
+    enterIsSend: Boolean,
     onTextChange: (String) -> Unit,
     onSend: () -> Unit,
     onAttachClick: () -> Unit
@@ -419,7 +455,9 @@ fun ChatInputBar(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                     ),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black)
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black),
+                    keyboardOptions = if (enterIsSend) KeyboardOptions(imeAction = ImeAction.Send) else KeyboardOptions.Default,
+                    keyboardActions = if (enterIsSend) KeyboardActions(onSend = { onSend() }) else KeyboardActions.Default
                 )
                 IconButton(onClick = onAttachClick) { 
                     Icon(Icons.Default.AttachFile, null, tint = WhatsAppTextSecondaryLight) 

@@ -21,6 +21,17 @@ class ProfileRepositoryImpl : ProfileRepository {
             .decodeSingleOrNull<UserProfile>()
     }
 
+    override suspend fun getAllProfiles(): List<UserProfile> {
+        return try {
+            postgrest["profiles"]
+                .select()
+                .decodeList<UserProfile>()
+        } catch (e: Exception) {
+            Log.e("ProfileRepository", "Error fetching all profiles", e)
+            emptyList()
+        }
+    }
+
     override suspend fun updateProfile(profile: UserProfile) {
         postgrest["profiles"].upsert(profile)
     }
@@ -28,7 +39,8 @@ class ProfileRepositoryImpl : ProfileRepository {
     override suspend fun uploadProfilePicture(userId: String, byteArray: ByteArray): String {
         return try {
             val bucket = storage["profile_pictures"]
-            val path = "$userId/profile.jpg"
+            val timestamp = System.currentTimeMillis()
+            val path = "$userId/profile_$timestamp.jpg"
             bucket.upload(path, byteArray) {
                 upsert = true
             }
@@ -43,6 +55,36 @@ class ProfileRepositoryImpl : ProfileRepository {
         } catch (e: Exception) {
             Log.e("ProfileRepository", "Unexpected error uploading profile picture", e)
             throw e
+        }
+    }
+
+    override suspend fun deleteProfilePicture(userId: String, fileName: String) {
+        try {
+            val bucket = storage["profile_pictures"]
+            val path = "$userId/$fileName"
+            bucket.delete(path)
+        } catch (e: Exception) {
+            Log.e("ProfileRepository", "Error deleting profile picture: ${e.message}")
+        }
+    }
+
+    override suspend fun updateEmailVisibility(userId: String, isHidden: Boolean) {
+        postgrest["profiles"].update(
+            mapOf("is_email_hidden" to isHidden)
+        ) {
+            filter {
+                eq("id", userId)
+            }
+        }
+    }
+
+    override suspend fun scheduleAccountDeletion(userId: String, timestamp: String?) {
+        postgrest["profiles"].update(
+            mapOf("deletion_scheduled_at" to timestamp)
+        ) {
+            filter {
+                eq("id", userId)
+            }
         }
     }
 }

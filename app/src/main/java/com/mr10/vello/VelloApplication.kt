@@ -8,6 +8,8 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.functions.Functions
+import io.github.jan.supabase.serializer.KotlinXSerializer
+import kotlinx.serialization.json.Json
 
 class VelloApplication : Application() {
 
@@ -30,6 +32,12 @@ class VelloApplication : Application() {
             install(Realtime)
             install(Storage)
             install(Functions)
+            
+            // Configure JSON to ignore nulls during serialization
+            defaultSerializer = KotlinXSerializer(Json {
+                ignoreUnknownKeys = true
+                encodeDefaults = false // This prevents sending nulls for optional fields
+            })
         }
     }
 }

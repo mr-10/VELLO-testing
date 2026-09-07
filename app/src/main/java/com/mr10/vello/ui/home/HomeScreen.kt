@@ -237,7 +237,17 @@ fun HomeScreen(
                 when (selectedTab) {
                     0 -> ChatListScreen(viewModel = chatViewModel, onChatClick = onNavigateToChat)
                     1 -> StatusScreen()
-                    2 -> CommunitiesScreen()
+                    2 -> CommunitiesScreen(
+                        onNavigateToChat = { user ->
+                            onNavigateToChat(
+                                Chat(
+                                    id = user.id,
+                                    name = user.name,
+                                    profilePictureUrl = user.profilePictureUrl
+                                )
+                            )
+                        }
+                    )
                     3 -> CallsScreen()
                 }
             }

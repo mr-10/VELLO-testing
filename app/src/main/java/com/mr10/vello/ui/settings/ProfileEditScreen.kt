@@ -25,6 +25,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.mr10.vello.ui.auth.AuthViewModel
 import com.mr10.vello.ui.theme.*
@@ -43,6 +45,7 @@ fun ProfileEditScreen(
     
     var showNameEdit by remember { mutableStateOf(false) }
     var showAboutEdit by remember { mutableStateOf(false) }
+    var showImagePreview by remember { mutableStateOf(false) }
     
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -51,6 +54,14 @@ fun ProfileEditScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
+    }
+
+    if (showImagePreview) {
+        val displayUrl = imageUri ?: profile?.profilePictureUrl ?: "https://ui-avatars.com/api/?name=${profile?.name ?: "User"}&background=random"
+        FullScreenImagePreview(
+            imageUrl = displayUrl.toString(),
+            onDismiss = { showImagePreview = false }
+        )
     }
 
     if (showNameEdit) {
@@ -105,14 +116,14 @@ fun ProfileEditScreen(
             // Profile Image Section with delightful Stitch transition
             Box(
                 modifier = Modifier
-                    .size(160.dp)
-                    .clickable { launcher.launch("image/*") },
+                    .size(160.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(CircleShape),
+                        .clip(CircleShape)
+                        .clickable { showImagePreview = true },
                     color = Color.LightGray,
                     shadowElevation = 4.dp
                 ) {
@@ -126,7 +137,8 @@ fun ProfileEditScreen(
                 Surface(
                     modifier = Modifier
                         .size(44.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
+                        .clickable { launcher.launch("image/*") },
                     color = VelloTertiary,
                     tonalElevation = 4.dp
                 ) {
@@ -205,6 +217,43 @@ fun ProfileEditScreen(
                 Text("SAVE PROFILE", fontWeight = FontWeight.Bold, color = Color.White)
             }
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+fun FullScreenImagePreview(
+    imageUrl: String,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .clickable { onDismiss() },
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "Full Profile Picture",
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.Fit
+            )
+            
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close", tint = Color.White)
+            }
         }
     }
 }

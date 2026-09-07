@@ -1,12 +1,15 @@
 package com.mr10.vello.ui.chat
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr10.vello.data.model.Chat
 import com.mr10.vello.data.model.Message
+import com.mr10.vello.data.model.MessageStatus
 import com.mr10.vello.data.repository.ChatRepository
 import com.mr10.vello.data.repository.ChatRepositoryImpl
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,11 +57,17 @@ class ChatViewModel(
         
         messageObservationJob = viewModelScope.launch {
             _isLoading.value = true
-            _messages.value = repository.getMessages(chatId)
-            _isLoading.value = false
-            
-            repository.observeMessages(chatId).collectLatest { newMessage ->
-                _messages.value = _messages.value + newMessage
+            try {
+                _messages.value = repository.getMessages(chatId)
+                _isLoading.value = false
+                
+                repository.observeMessages(chatId).collectLatest { newMessage ->
+                    _messages.value = _messages.value + newMessage
+                }
+            } catch (e: Exception) {
+                _isLoading.value = false
+                // Log or handle error
+                Log.e("ChatViewModel", "Error loading messages", e)
             }
         }
 
@@ -70,6 +79,14 @@ class ChatViewModel(
         }
     }
 
+    fun observeMessages(chatId: String): Flow<Message> {
+        return repository.observeMessages(chatId)
+    }
+
+    fun observeAllMessages(): Flow<Message> {
+        return repository.observeAllMessages()
+    }
+
     fun sendMessage(chatId: String, senderId: String, content: String) {
         viewModelScope.launch {
             val pendingMessage = Message(
@@ -78,13 +95,21 @@ class ChatViewModel(
                 content = content,
                 status = com.mr10.vello.data.model.MessageStatus.PENDING
             )
+            
+            // Add to local list for immediate UI feedback
             _messages.value = _messages.value + pendingMessage
             
             try {
-                repository.sendMessage(pendingMessage.copy(status = com.mr10.vello.data.model.MessageStatus.SENT))
-                // The actual message will be received via observeMessages and replace the pending one
+                // Send to repository
+                repository.sendMessage(pendingMessage.copy(status = MessageStatus.SENT))
+                Log.d("ChatViewModel", "Message sent successfully")
             } catch (e: Exception) {
-                // Handle error
+                Log.e("ChatViewModel", "Failed to send message: ${e.message}", e)
+                // Update the last message to failed status (optional: remove it or show error)
+                _messages.value = _messages.value.map { 
+                    if (it == pendingMessage) it.copy(status = MessageStatus.PENDING) // Keep as pending but maybe add an error flag
+                    else it
+                }
             }
         }
     }

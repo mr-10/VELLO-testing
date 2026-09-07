@@ -2,6 +2,7 @@ package com.mr10.vello.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.os.Build
 import com.mr10.vello.auth.AuthRepository
 import com.mr10.vello.VelloApplication
 import com.mr10.vello.data.repository.ProfileRepository
@@ -17,6 +18,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 class AuthViewModel(
     private val repository: AuthRepository = AuthRepository(VelloApplication.supabaseClient),
@@ -44,6 +51,9 @@ class AuthViewModel(
 
     private val _isProfileChecked = MutableStateFlow(false)
     val isProfileChecked: StateFlow<Boolean> = _isProfileChecked.asStateFlow()
+
+    private val _deletionMessage = MutableStateFlow<String?>(null)
+    val deletionMessage: StateFlow<String?> = _deletionMessage.asStateFlow()
 
     val sessionStatus: StateFlow<SessionStatus?> = repository.sessionStatus
         .stateIn(
@@ -80,10 +90,63 @@ class AuthViewModel(
         try {
             val profile = profileRepository.getProfile(userId)
             _userProfile.value = profile
+            
+            // Cancel scheduled deletion if it exists
+            if (profile?.deletionScheduledAt != null) {
+                profileRepository.scheduleAccountDeletion(userId, null)
+                _userProfile.value = profile.copy(deletionScheduledAt = null)
+                _deletionMessage.value = "Account deletion process has been stopped automatically."
+            }
+            
             _isProfileChecked.value = true
         } catch (e: Exception) {
             _isProfileChecked.value = true
         }
+    }
+
+    fun updateEmailVisibility(isHidden: Boolean) {
+        viewModelScope.launch {
+            try {
+                val userId = currentUser.value?.id ?: return@launch
+                profileRepository.updateEmailVisibility(userId, isHidden)
+                _userProfile.value = _userProfile.value?.copy(isEmailHidden = isHidden)
+            } catch (e: Exception) {
+                _uiState.value = AuthUiState.Error(e.message ?: "Failed to update visibility")
+            }
+        }
+    }
+
+    fun scheduleAccountDeletion() {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.Loading
+            try {
+                val userId = currentUser.value?.id ?: throw Exception("User not logged in")
+                // Calculate 24 hours from now in ISO 8601
+                val deletionTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Instant.now().plus(24, ChronoUnit.HOURS).toString()
+                } else {
+                    val cal = Calendar.getInstance()
+                    cal.add(Calendar.HOUR, 24)
+                    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+                    sdf.timeZone = TimeZone.getTimeZone("UTC")
+                    sdf.format(cal.time)
+                }
+                
+                profileRepository.scheduleAccountDeletion(userId, deletionTime)
+                _userProfile.value = _userProfile.value?.copy(deletionScheduledAt = deletionTime)
+                _deletionMessage.value = "Account deletion is on the way. Your account will be deleted permanently in 24 hours."
+                
+                // Sign out after scheduling
+                signOut()
+                _uiState.value = AuthUiState.Success
+            } catch (e: Exception) {
+                _uiState.value = AuthUiState.Error(e.message ?: "Failed to schedule deletion")
+            }
+        }
+    }
+
+    fun clearDeletionMessage() {
+        _deletionMessage.value = null
     }
 
     fun signUp(email: String, password: String) {
@@ -186,11 +249,22 @@ class AuthViewModel(
             _uiState.value = AuthUiState.Loading
             try {
                 val userId = currentUser.value?.id ?: throw Exception("User not logged in")
+                val currentProfile = _userProfile.value
+                
                 var imageUrl: String? = null
                 if (imageBytes != null) {
+                    // Delete old picture if it exists
+                    currentProfile?.profilePictureUrl?.let { oldUrl ->
+                        try {
+                            val fileName = oldUrl.substringAfterLast("/")
+                            profileRepository.deleteProfilePicture(userId, fileName)
+                        } catch (e: Exception) {
+                            // Ignore deletion errors
+                        }
+                    }
                     imageUrl = profileRepository.uploadProfilePicture(userId, imageBytes)
                 }
-                val currentProfile = _userProfile.value
+                
                 val profile = UserProfile(
                     id = userId, 
                     name = name, 

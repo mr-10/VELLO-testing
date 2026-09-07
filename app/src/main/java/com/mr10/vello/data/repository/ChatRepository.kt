@@ -9,6 +9,7 @@ interface ChatRepository {
     suspend fun getMessages(chatId: String): List<Message>
     suspend fun sendMessage(message: Message)
     fun observeMessages(chatId: String): Flow<Message>
+    fun observeAllMessages(): Flow<Message>
     suspend fun sendTypingStatus(chatId: String, userId: String, isTyping: Boolean)
     fun observeTypingStatus(chatId: String): Flow<Pair<String, Boolean>>
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -38,11 +40,11 @@ fun SettingsScreen(
     onNavigateToProfileEdit: () -> Unit,
     onNavigateToAccount: () -> Unit,
     onNavigateToPrivacy: () -> Unit,
-    onNavigateToAvatar: () -> Unit,
     onNavigateToChats: () -> Unit,
     onNavigateToNotifications: () -> Unit,
     onNavigateToStorage: () -> Unit,
-    onNavigateToHelp: () -> Unit
+    onNavigateToHelp: () -> Unit,
+    onNavigateToSettingsSearch: () -> Unit
 ) {
     val currentUser by viewModel.currentUser.collectAsState()
     val profile by viewModel.userProfile.collectAsState()
@@ -57,7 +59,7 @@ fun SettingsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Search */ }) {
+                    IconButton(onClick = onNavigateToSettingsSearch) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
                     IconButton(onClick = { /* More */ }) {
@@ -118,13 +120,6 @@ fun SettingsScreen(
                             subtitle = "Block contacts, disappearing messages",
                             onClick = onNavigateToPrivacy
                         )
-                        HorizontalDivider(modifier = Modifier.padding(start = 72.dp), thickness = 0.5.dp, color = Color(0xFFF0F2F5))
-                        SettingsItem(
-                            icon = Icons.Default.Mood,
-                            title = "Avatar",
-                            subtitle = "Create, edit, profile photo",
-                            onClick = onNavigateToAvatar
-                        )
                     }
                 }
             }
@@ -138,7 +133,7 @@ fun SettingsScreen(
                 ) {
                     Column {
                         SettingsItem(
-                            icon = Icons.Default.Chat,
+                            icon = Icons.AutoMirrored.Filled.Chat,
                             title = "Chats",
                             subtitle = "Theme, wallpapers, chat history",
                             onClick = onNavigateToChats
@@ -169,7 +164,7 @@ fun SettingsScreen(
                     shadowElevation = 1.dp
                 ) {
                     SettingsItem(
-                        icon = Icons.Default.HelpOutline,
+                        icon = Icons.AutoMirrored.Filled.HelpOutline,
                         title = "Help",
                         subtitle = "Help centre, contact us, privacy policy",
                         onClick = onNavigateToHelp

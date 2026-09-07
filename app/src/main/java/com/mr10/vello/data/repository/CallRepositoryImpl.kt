@@ -1,31 +1,73 @@
 package com.mr10.vello.data.repository
 
 import com.mr10.vello.VelloApplication
+import io.github.jan.supabase.realtime.RealtimeChannel
+import io.github.jan.supabase.realtime.broadcastFlow
+import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.realtime
+import io.github.jan.supabase.realtime.broadcast.BroadcastPayload
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onStart
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
+import java.util.UUID
+
+@Serializable
+data class CallSignal(
+    val type: String, // "INVITE", "RINGING", "ACCEPT", "REJECT", "END"
+    val callId: String,
+    val callerId: String,
+    val callerName: String,
+    val isVideo: Boolean
+)
 
 class CallRepositoryImpl : CallRepository {
     private val realtime by lazy { VelloApplication.supabaseClient.realtime }
 
-    override suspend fun makeCall(receiverId: String, isVideo: Boolean) {
-        // TODO: Implement Supabase Realtime Broadcast to signal the receiver
+    private suspend fun sendCallSignal(targetId: String, signal: CallSignal) {
+        val channel = realtime.channel("calls_$targetId")
+        channel.broadcast(
+            event = "call_event",
+            payload = BroadcastPayload.Json(Json.encodeToJsonElement(signal))
+        )
     }
 
-    override suspend fun acceptCall(callId: String) {
-        // TODO: Signal acceptance
+    override suspend fun makeCall(receiverId: String, callerId: String, callerName: String, isVideo: Boolean) {
+        val callId = UUID.randomUUID().toString()
+        sendCallSignal(receiverId, CallSignal("INVITE", callId, callerId, callerName, isVideo))
     }
 
-    override suspend fun rejectCall(callId: String) {
-        // TODO: Signal rejection
+    override suspend fun sendRinging(callerId: String, callId: String) {
+        sendCallSignal(callerId, CallSignal("RINGING", callId, "", "", false))
     }
 
-    override suspend fun endCall(callId: String) {
-        // TODO: Signal end of call
+    override suspend fun acceptCall(callerId: String, callId: String) {
+        sendCallSignal(callerId, CallSignal("ACCEPT", callId, "", "", false))
+    }
+
+    override suspend fun rejectCall(callerId: String, callId: String) {
+        sendCallSignal(callerId, CallSignal("REJECT", callId, "", "", false))
+    }
+
+    override suspend fun endCall(targetId: String, callId: String) {
+        sendCallSignal(targetId, CallSignal("END", callId, "", "", false))
     }
 
     override fun observeIncomingCalls(userId: String): Flow<CallEvent> {
-        // TODO: Observe Supabase Realtime channel for call events
-        return emptyFlow()
+        val channel = realtime.channel("calls_$userId")
+        return channel.broadcastFlow<CallSignal>(event = "call_event")
+            .onStart { channel.subscribe() }
+            .mapNotNull { signal ->
+                when (signal.type) {
+                    "INVITE" -> CallEvent.Incoming(signal.callId, signal.callerId, signal.callerName, signal.isVideo)
+                    "RINGING" -> CallEvent.Ringing(signal.callId)
+                    "ACCEPT" -> CallEvent.Accepted(signal.callId)
+                    "REJECT" -> CallEvent.Rejected(signal.callId)
+                    "END" -> CallEvent.Ended(signal.callId)
+                    else -> null
+                }
+            }
     }
 }

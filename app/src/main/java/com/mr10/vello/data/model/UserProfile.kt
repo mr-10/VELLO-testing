@@ -16,6 +16,10 @@ data class UserProfile(
     val profilePictureUrl: String? = null,
     @SerialName("status_quote")
     val statusQuote: String? = "Hey there! I am using Vello.",
+    @SerialName("is_email_hidden")
+    val isEmailHidden: Boolean = false,
+    @SerialName("deletion_scheduled_at")
+    val deletionScheduledAt: String? = null,
     @SerialName("created_at")
     val createdAt: String? = null
 )

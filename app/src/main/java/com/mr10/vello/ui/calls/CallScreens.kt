@@ -38,43 +38,55 @@ fun IncomingCallScreen(
                 .padding(top = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("INCOMING ${if (isVideo) "VIDEO" else "VOICE"} CALL", color = Color.White.copy(alpha = 0.7f), letterSpacing = 2.sp)
+            Text("VELLO ${if (isVideo) "VIDEO" else "VOICE"} CALL", color = Color.White.copy(alpha = 0.7f), letterSpacing = 2.sp, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(24.dp))
             Surface(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(140.dp)
                     .clip(CircleShape),
-                color = Color.LightGray
+                color = Color.LightGray,
+                tonalElevation = 4.dp
             ) {
                 AsyncImage(
-                    model = "https://ui-avatars.com/api/?name=$callerName&size=256",
+                    model = "https://ui-avatars.com/api/?name=$callerName&size=256&background=random",
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(callerName, color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            Text("Incoming...", color = Color.White.copy(alpha = 0.7f), fontSize = 18.sp)
             
             Spacer(modifier = Modifier.weight(1f))
             
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 100.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                    .padding(bottom = 80.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                CallButton(
-                    icon = Icons.Default.CallEnd,
-                    backgroundColor = Color.Red,
-                    contentDescription = "Reject",
-                    onClick = onReject
-                )
-                CallButton(
-                    icon = if (isVideo) Icons.Default.Videocam else Icons.Default.Call,
-                    backgroundColor = Color.Green,
-                    contentDescription = "Accept",
-                    onClick = onAccept
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CallButton(
+                        icon = Icons.Default.CallEnd,
+                        backgroundColor = Color(0xFFEF5350),
+                        contentDescription = "Reject",
+                        onClick = onReject
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Decline", color = Color.White, fontSize = 12.sp)
+                }
+                
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CallButton(
+                        icon = if (isVideo) Icons.Default.Videocam else Icons.Default.Call,
+                        backgroundColor = Color(0xFF66BB6A),
+                        contentDescription = "Accept",
+                        onClick = onAccept
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Answer", color = Color.White, fontSize = 12.sp)
+                }
             }
         }
     }
@@ -84,6 +96,7 @@ fun IncomingCallScreen(
 fun OutgoingCallScreen(
     receiverName: String,
     isVideo: Boolean,
+    isRinging: Boolean = false,
     onEndCall: () -> Unit
 ) {
     Box(
@@ -97,33 +110,46 @@ fun OutgoingCallScreen(
                 .padding(top = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("CALLING", color = Color.White.copy(alpha = 0.7f), letterSpacing = 2.sp)
+            Text("VELLO ${if (isVideo) "VIDEO" else "VOICE"} CALL", color = Color.White.copy(alpha = 0.7f), letterSpacing = 2.sp, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(24.dp))
             Surface(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(140.dp)
                     .clip(CircleShape),
-                color = Color.LightGray
+                color = Color.LightGray,
+                tonalElevation = 4.dp
             ) {
                 AsyncImage(
-                    model = "https://ui-avatars.com/api/?name=$receiverName&size=256",
+                    model = "https://ui-avatars.com/api/?name=$receiverName&size=256&background=random",
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(receiverName, color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Bold)
-            Text("Ringing...", color = Color.White.copy(alpha = 0.7f), fontSize = 18.sp)
+            
+            // Real-time status: Calling vs Ringing
+            Text(
+                text = if (isRinging) "Ringing..." else "Calling...",
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 18.sp
+            )
             
             Spacer(modifier = Modifier.weight(1f))
             
-            CallButton(
-                icon = Icons.Default.CallEnd,
-                backgroundColor = Color.Red,
-                contentDescription = "End Call",
-                onClick = onEndCall,
-                modifier = Modifier.padding(bottom = 100.dp)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = 80.dp)
+            ) {
+                CallButton(
+                    icon = Icons.Default.CallEnd,
+                    backgroundColor = Color(0xFFEF5350),
+                    contentDescription = "End Call",
+                    onClick = onEndCall
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("End", color = Color.White, fontSize = 12.sp)
+            }
         }
     }
 }

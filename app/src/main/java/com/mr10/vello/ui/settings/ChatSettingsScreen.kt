@@ -4,24 +4,53 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr10.vello.data.local.LocalSettingsManager
+import com.mr10.vello.ui.theme.Palettes
 import com.mr10.vello.ui.theme.VelloOnSurface
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatSettingsScreen(onBack: () -> Unit) {
+fun ChatSettingsScreen(
+    onBack: () -> Unit,
+    onNavigateToFontSize: () -> Unit,
+    onNavigateToWallpaper: () -> Unit
+) {
+    val context = LocalContext.current
+    val settingsManager = remember { LocalSettingsManager.getInstance(context) }
+    val themeIndex by settingsManager.themeIndex.collectAsState()
+    val fontSize by settingsManager.fontSize.collectAsState()
+    val enterIsSend by settingsManager.enterIsSend.collectAsState()
+
+    var showThemeDialog by remember { mutableStateOf(false) }
+
+    if (showThemeDialog) {
+        ThemeSelectionDialog(
+            currentIndex = themeIndex,
+            onDismiss = { showThemeDialog = false },
+            onSelect = { 
+                settingsManager.setThemeIndex(it)
+                showThemeDialog = false
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -44,8 +73,18 @@ fun ChatSettingsScreen(onBack: () -> Unit) {
                     color = Color.Gray,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                 )
-                SettingsDetailOption(Icons.Default.LightMode, "Theme", "System default")
-                SettingsDetailOption(Icons.Default.Wallpaper, "Wallpaper", "")
+                SettingsDetailOption(
+                    icon = Icons.Default.LightMode, 
+                    title = "Theme", 
+                    subtitle = "Current Palette: ${themeIndex + 1}",
+                    onClick = { showThemeDialog = true }
+                )
+                SettingsDetailOption(
+                    icon = Icons.Default.Wallpaper, 
+                    title = "Wallpaper", 
+                    subtitle = "Chat background customization",
+                    onClick = onNavigateToWallpaper
+                )
             }
             item {
                 Text(
@@ -54,22 +93,81 @@ fun ChatSettingsScreen(onBack: () -> Unit) {
                     color = Color.Gray,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                 )
-                SettingsDetailOption(null, "Enter is send", "Enter key will send your message", isSwitch = true)
-                SettingsDetailOption(null, "Media visibility", "Show newly downloaded media in your phone's gallery", isSwitch = true)
-                SettingsDetailOption(null, "Font size", "Medium")
+                SettingsDetailOption(
+                    null, 
+                    "Enter is send", 
+                    "Enter key will send your message", 
+                    isSwitch = true,
+                    switchChecked = enterIsSend,
+                    onSwitchChange = { settingsManager.setEnterIsSend(it) }
+                )
+                SettingsDetailOption(
+                    null, 
+                    "Font size", 
+                    fontSize,
+                    onClick = onNavigateToFontSize
+                )
             }
         }
     }
 }
 
 @Composable
-fun SettingsDetailOption(icon: ImageVector?, title: String, subtitle: String, isSwitch: Boolean = false) {
+fun ThemeSelectionDialog(
+    currentIndex: Int,
+    onDismiss: () -> Unit,
+    onSelect: (Int) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Choose theme palette") },
+        text = {
+            LazyColumn(modifier = Modifier.height(300.dp)) {
+                itemsIndexed(Palettes) { index, scheme ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSelect(index) }
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(scheme.primary)
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text("Palette ${index + 1}", modifier = Modifier.weight(1f))
+                        if (index == currentIndex) {
+                            Icon(Icons.Default.Check, contentDescription = null, tint = scheme.primary)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("CANCEL") }
+        }
+    )
+}
+
+@Composable
+fun SettingsDetailOption(
+    icon: ImageVector?, 
+    title: String, 
+    subtitle: String, 
+    isSwitch: Boolean = false,
+    switchChecked: Boolean = false,
+    onSwitchChange: (Boolean) -> Unit = {},
+    onClick: () -> Unit = {}
+) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         color = Color.White
     ) {
         Row(
-            modifier = Modifier.clickable {}.padding(16.dp),
+            modifier = Modifier.clickable { if (!isSwitch) onClick() }.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (icon != null) {
@@ -83,7 +181,7 @@ fun SettingsDetailOption(icon: ImageVector?, title: String, subtitle: String, is
                 if (subtitle.isNotEmpty()) Text(subtitle, fontSize = 14.sp, color = Color.Gray)
             }
             if (isSwitch) {
-                Switch(checked = true, onCheckedChange = {})
+                Switch(checked = switchChecked, onCheckedChange = onSwitchChange)
             }
         }
     }
