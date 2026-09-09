@@ -15,9 +15,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 25
-        // v9.9.5: Fix Supabase implementation and add community support
-        versionName = "9.9.5"
+        versionCode = 26
+        // v9.9.6: Phase 2 Messaging Core Implementation
+        versionName = "9.9.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

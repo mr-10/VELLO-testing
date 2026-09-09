@@ -17,6 +17,7 @@
 
 # Ktor
 -keep class io.ktor.** { *; }
+-dontwarn java.lang.management.**
 
 # OkHttp (if used)
 -keepattributes Signature
