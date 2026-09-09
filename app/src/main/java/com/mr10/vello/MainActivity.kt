@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.collect
 
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mr10.vello.ui.chat.ChatScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -265,13 +266,15 @@ fun MainContent() {
                 }
                 is NavKey.ChatDetail -> NavEntry(key) { k ->
                     val detail = k as NavKey.ChatDetail
-                    ChatDetailScreen(
-                        chatId = detail.chatId,
-                        chatName = detail.chatName,
-                        viewModel = chatViewModel,
-                        authViewModel = authViewModel,
-                        callingViewModel = callingViewModel,
-                        onBack = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) }
+                    ChatScreen(
+                        conversationId = detail.chatId,
+                        onBackClick = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) },
+                        onCallClick = { 
+                            // TODO: Integrate with callingViewModel
+                        },
+                        onVideoClick = { 
+                            // TODO: Integrate with callingViewModel
+                        }
                     )
                 }
                 is NavKey.IncomingCall -> NavEntry(key) {
