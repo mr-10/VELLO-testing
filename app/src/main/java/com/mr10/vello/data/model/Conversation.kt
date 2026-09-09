@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Conversation(
     val id: String,
-    @SerialName("user_id1")
+    @SerialName("user_id_1")
     val userId1: String,
-    @SerialName("user_id2")
+    @SerialName("user_id_2")
     val userId2: String,
     @SerialName("last_message")
     val lastMessage: String? = null,

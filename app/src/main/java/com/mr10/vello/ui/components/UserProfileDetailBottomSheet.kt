@@ -92,9 +92,11 @@ fun UserProfileDetailBottomSheet(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Info Section
+            InfoItem(icon = Icons.Default.Info, label = "Bio", value = user.statusQuote ?: "No bio")
             InfoItem(icon = Icons.Default.Phone, label = "Phone", value = user.phoneNumber ?: "Not provided")
             InfoItem(icon = Icons.Default.Email, label = "Email", value = user.email ?: "Not provided")
             InfoItem(icon = Icons.Default.Cake, label = "Date of Birth", value = user.dob)
+            InfoItem(icon = Icons.Default.Event, label = "Joined", value = user.createdAt ?: "Unknown")
 
             Spacer(modifier = Modifier.height(32.dp))
 

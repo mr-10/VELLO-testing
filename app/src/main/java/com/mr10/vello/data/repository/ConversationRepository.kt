@@ -42,8 +42,8 @@ class ConversationRepository @Inject constructor(
     suspend fun createConversation(userId1: String, userId2: String): Conversation {
         return postgrest["conversations"]
             .insert(mapOf(
-                "user_id1" to userId1,
-                "user_id2" to userId2
+                "user_id_1" to userId1,
+                "user_id_2" to userId2
             )) {
                 select()
             }

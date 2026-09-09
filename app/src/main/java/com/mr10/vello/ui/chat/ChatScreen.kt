@@ -54,8 +54,8 @@ fun ChatScreen(
         topBar = {
             ChatHeader(
                 recipientName = recipientInfo?.name ?: "Loading...",
-                isOnline = false,
-                lastSeen = recipientInfo?.createdAt,
+                isOnline = recipientInfo?.isOnline ?: false,
+                lastSeen = recipientInfo?.lastSeenAt,
                 onBackClick = onBackClick,
                 onCallClick = onCallClick,
                 onVideoClick = onVideoClick,

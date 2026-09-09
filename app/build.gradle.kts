@@ -15,9 +15,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 28
-        // v9.9.8: Fix messaging, wired calls, and added profile view
-        versionName = "9.9.8"
+        versionCode = 29
+        // v9.9.9: Fix schema mismatch and enhance profile view
+        versionName = "9.9.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
