@@ -2,6 +2,7 @@ package com.mr10.vello.data.repository
 
 import android.util.Log
 import com.mr10.vello.data.model.Conversation
+import com.mr10.vello.data.model.ConversationInsert
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.realtime.PostgresAction
@@ -40,11 +41,13 @@ class ConversationRepository @Inject constructor(
     }
 
     suspend fun createConversation(userId1: String, userId2: String): Conversation {
+        // Using a dedicated data class with explicit @SerialName to force correct column mapping
+        val insertObject = ConversationInsert(
+            userId1 = userId1,
+            userId2 = userId2
+        )
         return postgrest["conversations"]
-            .insert(mapOf(
-                "user_id_1" to userId1,
-                "user_id_2" to userId2
-            )) {
+            .insert(insertObject) {
                 select()
             }
             .decodeSingle<Conversation>()

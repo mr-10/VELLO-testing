@@ -17,3 +17,11 @@ data class Conversation(
     @SerialName("created_at")
     val createdAt: String? = null
 )
+
+@Serializable
+data class ConversationInsert(
+    @SerialName("user_id_1")
+    val userId1: String,
+    @SerialName("user_id_2")
+    val userId2: String
+)

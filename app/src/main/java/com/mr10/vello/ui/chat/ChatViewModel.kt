@@ -104,10 +104,14 @@ class ChatViewModel @Inject constructor(
 
     fun sendMessage(chatId: String, senderId: String, content: String) {
         viewModelScope.launch {
+            // Find the correct recipient by looking at the chat metadata
+            val chat = _chats.value.find { it.id == chatId }
+            val recipientId = if (chat?.id == senderId) "error" else chat?.id ?: "unknown"
+
             val pendingMessage = Message(
                 conversationId = chatId,
                 senderId = senderId,
-                recipientId = "unknown", // Need to determine recipient
+                recipientId = recipientId,
                 content = content,
                 deliveryStatus = DeliveryStatus.PENDING
             )

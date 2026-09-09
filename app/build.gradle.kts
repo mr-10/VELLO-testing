@@ -15,9 +15,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 29
-        // v9.9.9: Fix schema mismatch and enhance profile view
-        versionName = "9.9.9"
+        versionCode = 31
+        // v10.0.1: Force schema mapping with explicit DTOs
+        versionName = "10.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
