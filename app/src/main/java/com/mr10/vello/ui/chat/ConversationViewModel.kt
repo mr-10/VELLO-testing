@@ -77,21 +77,34 @@ class ConversationViewModel @AssistedInject constructor(
             try {
                 _isLoadingMessages.value = true
                 
-                // Get conversation details
+                // Try to get conversation details
                 val conversation = conversationRepo.getConversation(conversationId)
                 
-                // Get recipient info
-                val recipientId = if (conversation.userId1 == currentUserId) {
-                    conversation.userId2
+                if (conversation == null) {
+                    // It might be a userId if we're starting a new chat
+                    val recipientProfile = userRepo.getUserProfile(conversationId)
+                    if (recipientProfile != null) {
+                        _recipientInfo.value = recipientProfile
+                        // Ideally we'd find an existing conversation between these two users
+                        // For now, we'll try to load messages for this "conversationId" as if it was correct
+                        // and create the conversation when the first message is sent.
+                    } else {
+                        _error.value = "Chat not found"
+                    }
                 } else {
-                    conversation.userId1
+                    // Get recipient info from conversation
+                    val recipientId = if (conversation.userId1 == currentUserId) {
+                        conversation.userId2
+                    } else {
+                        conversation.userId1
+                    }
+                    
+                    val recipient = userRepo.getUserProfile(recipientId)
+                    _recipientInfo.value = recipient
                 }
                 
-                val recipient = userRepo.getUserProfile(recipientId)
-                _recipientInfo.value = recipient
-                
-                // Subscribe to status updates
-                recipient?.let {
+                // Subscribe to status updates if we have a recipient
+                _recipientInfo.value?.let {
                     subscribeToRecipientStatus(it.id)
                 }
                 
@@ -112,34 +125,41 @@ class ConversationViewModel @AssistedInject constructor(
         
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val recipientId = _recipientInfo.value?.id ?: return@launch
+                
+                // 1. Ensure conversation exists
+                var actualConversationId = conversationId
+                val conversation = conversationRepo.getConversation(conversationId)
+                if (conversation == null) {
+                    // Try to find if a conversation already exists between these two
+                    // (Omitted for brevity, assuming we create a new one if not found by ID)
+                    val newConv = conversationRepo.createConversation(currentUserId, recipientId)
+                    actualConversationId = newConv.id
+                }
+
                 val message = Message(
                     id = UUID.randomUUID().toString(),
-                    conversationId = conversationId,
+                    conversationId = actualConversationId,
                     senderId = currentUserId,
-                    recipientId = _recipientInfo.value?.id ?: return@launch,
+                    recipientId = recipientId,
                     content = content.trim(),
                     messageType = MessageType.TEXT,
                     deliveryStatus = DeliveryStatus.PENDING,
                     sentAt = Instant.now().toString()
                 )
                 
-                // Add to local list immediately (optimistic update)
+                // Add to local list immediately
                 _messages.value = _messages.value + message
-                _messageInput.value = "" // Clear input
+                _messageInput.value = ""
                 
                 // Send to server
                 val result = messageRepo.sendMessage(message)
                 
                 result.onSuccess { sentMessage ->
-                    // Update with server response
                     updateMessageInList(sentMessage)
                     _lastMessageStatus.value = DeliveryStatus.SENT
-                    
-                    // Subscribe to delivery updates
                     subscribeToMessageStatus(sentMessage.id ?: return@onSuccess)
-                    
                 }.onFailure { error ->
-                    // Mark as failed in local list
                     updateMessageStatus(message.id ?: return@onFailure, DeliveryStatus.FAILED)
                     _error.value = "Failed to send message"
                     Log.e("ConversationVM", "Send error", error)

@@ -25,12 +25,27 @@ class ConversationRepository @Inject constructor(
     private val postgrest = supabase.postgrest
     private val realtime = supabase.realtime
 
-    suspend fun getConversation(conversationId: String): Conversation {
-        return postgrest["conversations"]
-            .select {
-                filter {
-                    eq("id", conversationId)
+    suspend fun getConversation(conversationId: String): Conversation? {
+        return try {
+            postgrest["conversations"]
+                .select {
+                    filter {
+                        eq("id", conversationId)
+                    }
                 }
+                .decodeSingleOrNull<Conversation>()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun createConversation(userId1: String, userId2: String): Conversation {
+        return postgrest["conversations"]
+            .insert(mapOf(
+                "user_id1" to userId1,
+                "user_id2" to userId2
+            )) {
+                select()
             }
             .decodeSingle<Conversation>()
     }

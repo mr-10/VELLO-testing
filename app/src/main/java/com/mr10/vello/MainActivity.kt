@@ -270,10 +270,26 @@ fun MainContent() {
                         conversationId = detail.chatId,
                         onBackClick = { if (backStack.size > 1) backStack.removeAt(backStack.size - 1) },
                         onCallClick = { 
-                            // TODO: Integrate with callingViewModel
+                            currentUser?.let { user ->
+                                callingViewModel.startOutgoingCall(
+                                    receiverId = detail.chatId,
+                                    receiverName = detail.chatName,
+                                    callerId = user.id,
+                                    callerName = userProfile?.name ?: user.email?.substringBefore("@") ?: "User",
+                                    isVideo = false
+                                )
+                            }
                         },
                         onVideoClick = { 
-                            // TODO: Integrate with callingViewModel
+                            currentUser?.let { user ->
+                                callingViewModel.startOutgoingCall(
+                                    receiverId = detail.chatId,
+                                    receiverName = detail.chatName,
+                                    callerId = user.id,
+                                    callerName = userProfile?.name ?: user.email?.substringBefore("@") ?: "User",
+                                    isVideo = true
+                                )
+                            }
                         }
                     )
                 }

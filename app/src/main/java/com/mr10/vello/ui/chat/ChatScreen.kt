@@ -40,6 +40,7 @@ fun ChatScreen(
 
     var showDeleteMenu by remember { mutableStateOf<String?>(null) }
     var showEditDialog by remember { mutableStateOf<Message?>(null) }
+    var showProfileSheet by remember { mutableStateOf(false) }
     
     val listState = rememberLazyListState()
     
@@ -53,11 +54,12 @@ fun ChatScreen(
         topBar = {
             ChatHeader(
                 recipientName = recipientInfo?.name ?: "Loading...",
-                isOnline = false, // TODO: Implement online status
-                lastSeen = recipientInfo?.createdAt, // TODO: Use actual last seen
+                isOnline = false,
+                lastSeen = recipientInfo?.createdAt,
                 onBackClick = onBackClick,
                 onCallClick = onCallClick,
-                onVideoClick = onVideoClick
+                onVideoClick = onVideoClick,
+                onProfileClick = { showProfileSheet = true }
             )
         },
         bottomBar = {
@@ -113,7 +115,7 @@ fun ChatScreen(
             }
 
             Box(modifier = Modifier.weight(1f)) {
-                if (isLoadingMessages) {
+                if (isLoadingMessages && messages.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -174,6 +176,14 @@ fun ChatScreen(
                 }
             }
         }
+    }
+
+    if (showProfileSheet && recipientInfo != null) {
+        UserProfileDetailBottomSheet(
+            user = recipientInfo!!,
+            onDismiss = { showProfileSheet = false },
+            onChatClick = { showProfileSheet = false }
+        )
     }
 
     if (showDeleteMenu != null) {

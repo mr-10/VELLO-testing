@@ -15,9 +15,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 27
-        // v9.9.7: Fix PackageInfo not found and installer issues
-        versionName = "9.9.7"
+        versionCode = 28
+        // v9.9.8: Fix messaging, wired calls, and added profile view
+        versionName = "9.9.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

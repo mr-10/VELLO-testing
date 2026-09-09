@@ -16,6 +16,14 @@ import androidx.compose.ui.unit.sp
 import com.mr10.vello.R
 import com.mr10.vello.util.toFormattedLastSeen
 
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
 @Composable
 fun ChatHeader(
     recipientName: String,
@@ -24,8 +32,11 @@ fun ChatHeader(
     onBackClick: () -> Unit,
     onCallClick: () -> Unit,
     onVideoClick: () -> Unit,
+    onProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showMenu by remember { mutableStateOf(false) }
+
     Surface(
         color = Color.White,
         shadowElevation = 4.dp,
@@ -39,7 +50,9 @@ fun ChatHeader(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { onProfileClick() },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -70,40 +83,64 @@ fun ChatHeader(
                 }
             }
 
-            IconButton(
-                onClick = onCallClick,
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_call),
-                    contentDescription = "Call",
-                    tint = Color(0xFF00A884),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = onCallClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_call),
+                        contentDescription = "Call",
+                        tint = Color(0xFF00A884),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
 
-            IconButton(
-                onClick = onVideoClick,
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_video),
-                    contentDescription = "Video",
-                    tint = Color(0xFF00A884),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+                IconButton(
+                    onClick = onVideoClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_video),
+                        contentDescription = "Video",
+                        tint = Color(0xFF00A884),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
 
-            IconButton(
-                onClick = { /* TODO: More options */ },
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_more),
-                    contentDescription = "More",
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
-                )
+                Box {
+                    IconButton(
+                        onClick = { showMenu = true },
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_more),
+                            contentDescription = "More",
+                            tint = Color.Black,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("View Contact") },
+                            onClick = { 
+                                showMenu = false
+                                onProfileClick()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Mute Notifications") },
+                            onClick = { showMenu = false }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Clear Chat") },
+                            onClick = { showMenu = false }
+                        )
+                    }
+                }
             }
         }
     }
