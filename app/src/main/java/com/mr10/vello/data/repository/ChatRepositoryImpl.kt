@@ -1,24 +1,25 @@
 package com.mr10.vello.data.repository
 
 import android.util.Log
-import com.mr10.vello.VelloApplication
 import com.mr10.vello.data.model.Chat
 import com.mr10.vello.data.model.Message
 import io.github.jan.supabase.exceptions.RestException
-import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
-import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onStart
 import java.time.Instant
+import javax.inject.Inject
 
-class ChatRepositoryImpl : ChatRepository {
-    private val postgrest by lazy { VelloApplication.supabaseClient.postgrest }
-    private val realtime by lazy { VelloApplication.supabaseClient.realtime }
+class ChatRepositoryImpl @Inject constructor(
+    private val postgrest: Postgrest,
+    private val realtime: Realtime
+) : ChatRepository {
 
     override suspend fun getChats(): List<Chat> {
         return try {
@@ -36,7 +37,7 @@ class ChatRepositoryImpl : ChatRepository {
             postgrest["messages"]
                 .select {
                     filter {
-                        eq("chat_id", chatId)
+                        eq("conversation_id", chatId)
                     }
                 }
                 .decodeList<Message>()
@@ -49,8 +50,8 @@ class ChatRepositoryImpl : ChatRepository {
     override suspend fun sendMessage(message: Message) {
         try {
             val now = Instant.now().toString()
-            val messageToSend = if (message.created_at == null) {
-                message.copy(created_at = now)
+            val messageToSend = if (message.sentAt == null) {
+                message.copy(sentAt = now)
             } else {
                 message
             }
@@ -89,7 +90,7 @@ class ChatRepositoryImpl : ChatRepository {
             .onStart { channel.subscribe() }
             .mapNotNull { 
                 val msg = it.decodeRecord<Message>()
-                if (msg.chatId == chatId) msg else null
+                if (msg.conversationId == chatId) msg else null
             }
     }
 

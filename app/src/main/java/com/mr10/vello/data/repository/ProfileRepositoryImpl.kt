@@ -1,15 +1,16 @@
 package com.mr10.vello.data.repository
 
 import android.util.Log
-import com.mr10.vello.VelloApplication
 import com.mr10.vello.data.model.UserProfile
-import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.exceptions.RestException
+import javax.inject.Inject
 
-class ProfileRepositoryImpl : ProfileRepository {
-    private val postgrest by lazy { VelloApplication.supabaseClient.postgrest }
-    private val storage by lazy { VelloApplication.supabaseClient.storage }
+class ProfileRepositoryImpl @Inject constructor(
+    private val postgrest: Postgrest,
+    private val storage: Storage
+) : ProfileRepository {
 
     override suspend fun getProfile(userId: String): UserProfile? {
         return postgrest["profiles"]

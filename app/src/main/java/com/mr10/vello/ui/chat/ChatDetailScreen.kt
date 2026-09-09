@@ -37,7 +37,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.mr10.vello.R
 import com.mr10.vello.data.model.Message
-import com.mr10.vello.data.model.MessageStatus
+import com.mr10.vello.data.model.DeliveryStatus
 import com.mr10.vello.ui.auth.AuthViewModel
 import com.mr10.vello.ui.calls.CallingViewModel
 import com.mr10.vello.ui.theme.*
@@ -388,7 +388,7 @@ fun ChatBubble(message: Message, isMine: Boolean) {
                     )
                     if (isMine) {
                         Spacer(modifier = Modifier.width(4.dp))
-                        MessageStatusIcon(message.status)
+                        MessageStatusIcon(message.deliveryStatus)
                     }
                 }
             }
@@ -397,14 +397,15 @@ fun ChatBubble(message: Message, isMine: Boolean) {
 }
 
 @Composable
-fun MessageStatusIcon(status: MessageStatus) {
+fun MessageStatusIcon(status: DeliveryStatus) {
     val icon = when (status) {
-        MessageStatus.PENDING -> Icons.Default.Schedule
-        MessageStatus.SENT -> Icons.Default.Check
-        MessageStatus.DELIVERED -> Icons.Default.DoneAll
-        MessageStatus.READ -> Icons.Default.DoneAll
+        DeliveryStatus.PENDING -> Icons.Default.Schedule
+        DeliveryStatus.SENT -> Icons.Default.Check
+        DeliveryStatus.DELIVERED -> Icons.Default.DoneAll
+        DeliveryStatus.READ -> Icons.Default.DoneAll
+        DeliveryStatus.FAILED -> Icons.Default.Error
     }
-    val color = if (status == MessageStatus.READ) WhatsAppTicksBlue else WhatsAppTicksGray
+    val color = if (status == DeliveryStatus.READ) WhatsAppTicksBlue else WhatsAppTicksGray
     
     Icon(
         imageVector = icon,

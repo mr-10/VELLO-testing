@@ -11,8 +11,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class CallingViewModel(
-    private val repository: CallRepository = CallRepositoryImpl()
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class CallingViewModel @Inject constructor(
+    private val repository: CallRepository
 ) : ViewModel() {
 
     private val _callState = MutableStateFlow<CallUiState>(CallUiState.Idle)

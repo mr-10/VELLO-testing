@@ -3,10 +3,7 @@ package com.mr10.vello.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.os.Build
-import com.mr10.vello.auth.AuthRepository
-import com.mr10.vello.VelloApplication
 import com.mr10.vello.data.repository.ProfileRepository
-import com.mr10.vello.data.repository.ProfileRepositoryImpl
 import com.mr10.vello.data.model.UserProfile
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
@@ -25,9 +22,13 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
-class AuthViewModel(
-    private val repository: AuthRepository = AuthRepository(VelloApplication.supabaseClient),
-    private val profileRepository: ProfileRepository = ProfileRepositoryImpl()
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val repository: com.mr10.vello.data.repository.AuthRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)

@@ -1,10 +1,9 @@
 package com.mr10.vello.data.repository
 
-import com.mr10.vello.VelloApplication
+import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.RealtimeChannel
 import io.github.jan.supabase.realtime.broadcastFlow
 import io.github.jan.supabase.realtime.channel
-import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.broadcast.BroadcastPayload
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
@@ -13,6 +12,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import java.util.UUID
+import javax.inject.Inject
 
 @Serializable
 data class CallSignal(
@@ -23,8 +23,9 @@ data class CallSignal(
     val isVideo: Boolean
 )
 
-class CallRepositoryImpl : CallRepository {
-    private val realtime by lazy { VelloApplication.supabaseClient.realtime }
+class CallRepositoryImpl @Inject constructor(
+    private val realtime: Realtime
+) : CallRepository {
 
     private suspend fun sendCallSignal(targetId: String, signal: CallSignal) {
         val channel = realtime.channel("calls_$targetId")

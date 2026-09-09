@@ -12,9 +12,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class CommunitiesViewModel(
-    private val profileRepository: ProfileRepository = ProfileRepositoryImpl(),
-    private val communityRepository: CommunityRepository = CommunityRepositoryImpl()
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class CommunitiesViewModel @Inject constructor(
+    private val profileRepository: ProfileRepository,
+    private val communityRepository: CommunityRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<CommunitiesUiState>(CommunitiesUiState.Loading)

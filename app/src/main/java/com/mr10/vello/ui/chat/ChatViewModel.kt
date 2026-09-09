@@ -4,24 +4,22 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr10.vello.data.model.Chat
+import com.mr10.vello.data.model.DeliveryStatus
 import com.mr10.vello.data.model.Message
-import com.mr10.vello.data.model.MessageStatus
 import com.mr10.vello.data.repository.AuthRepository
 import com.mr10.vello.data.repository.AuthRepositoryImpl
 import com.mr10.vello.data.repository.ChatRepository
 import com.mr10.vello.data.repository.ChatRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChatViewModel(
-    private val repository: ChatRepository = ChatRepositoryImpl(),
-    private val authRepository: AuthRepository = AuthRepositoryImpl()
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val repository: ChatRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _chats = MutableStateFlow<List<Chat>>(emptyList())
@@ -81,7 +79,7 @@ class ChatViewModel(
                 observationFlow.collectLatest { newMessage ->
                     _messages.value = (_messages.value + newMessage)
                         .distinctBy { it.id ?: it.hashCode() }
-                        .sortedBy { it.created_at }
+                        .sortedBy { it.sentAt }
                 }
             } catch (e: Exception) {
                 _isLoading.value = false
@@ -107,10 +105,11 @@ class ChatViewModel(
     fun sendMessage(chatId: String, senderId: String, content: String) {
         viewModelScope.launch {
             val pendingMessage = Message(
-                chatId = chatId,
+                conversationId = chatId,
                 senderId = senderId,
+                recipientId = "unknown", // Need to determine recipient
                 content = content,
-                status = com.mr10.vello.data.model.MessageStatus.PENDING
+                deliveryStatus = DeliveryStatus.PENDING
             )
             
             // Add to local list for immediate UI feedback
@@ -118,13 +117,13 @@ class ChatViewModel(
             
             try {
                 // Send to repository
-                repository.sendMessage(pendingMessage.copy(status = MessageStatus.SENT))
+                repository.sendMessage(pendingMessage.copy(deliveryStatus = com.mr10.vello.data.model.DeliveryStatus.SENT))
                 Log.d("ChatViewModel", "Message sent successfully")
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Failed to send message: ${e.message}", e)
                 // Update the last message to failed status (optional: remove it or show error)
                 _messages.value = _messages.value.map { 
-                    if (it == pendingMessage) it.copy(status = MessageStatus.PENDING) // Keep as pending but maybe add an error flag
+                    if (it == pendingMessage) it.copy(deliveryStatus = DeliveryStatus.FAILED)
                     else it
                 }
             }

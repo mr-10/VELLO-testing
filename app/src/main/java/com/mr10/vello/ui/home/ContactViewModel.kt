@@ -7,7 +7,11 @@ import com.mr10.vello.data.repository.ContactRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ContactViewModel(private val repository: ContactRepository) : ViewModel() {
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class ContactViewModel @Inject constructor(private val repository: ContactRepository) : ViewModel() {
 
     private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
     val contacts: StateFlow<List<Contact>> = _contacts.asStateFlow()

@@ -1,23 +1,24 @@
 package com.mr10.vello.data.repository
 
 import android.util.Log
-import com.mr10.vello.VelloApplication
 import com.mr10.vello.data.model.Community
 import com.mr10.vello.data.model.Message
-import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
-import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onStart
 import java.time.Instant
+import javax.inject.Inject
 
-class CommunityRepositoryImpl : CommunityRepository {
-    private val postgrest by lazy { VelloApplication.supabaseClient.postgrest }
-    private val realtime by lazy { VelloApplication.supabaseClient.realtime }
+class CommunityRepositoryImpl @Inject constructor(
+    private val postgrest: Postgrest,
+    private val realtime: Realtime
+) : CommunityRepository {
 
     override suspend fun getCommunities(): List<Community> {
         return try {

@@ -1,25 +1,29 @@
 package com.mr10.vello.data.repository
 
-import com.mr10.vello.VelloApplication
-import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.status.SessionStatus
-import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.user.UserInfo
-import io.github.jan.supabase.functions.functions
+import io.github.jan.supabase.functions.Functions
 import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
+import javax.inject.Inject
 
-class AuthRepositoryImpl : AuthRepository {
-    private val auth by lazy { VelloApplication.supabaseClient.auth }
-    private val functions by lazy { VelloApplication.supabaseClient.functions }
+class AuthRepositoryImpl @Inject constructor(
+    private val auth: Auth,
+    private val functions: Functions
+) : AuthRepository {
 
     override val currentUser: Flow<UserInfo?> = auth.sessionStatus.map { status ->
         when (status) {
@@ -30,67 +34,111 @@ class AuthRepositoryImpl : AuthRepository {
 
     override val sessionStatus: Flow<SessionStatus> = auth.sessionStatus
 
-    override suspend fun checkUserExists(email: String): Boolean {
-        val response = functions.invoke("check-user", buildJsonObject {
-            put("email", email)
-        })
-        val body = response.bodyAsText()
-        val json = Json.parseToJsonElement(body).jsonObject
-        return json["exists"]?.jsonPrimitive?.content?.toBoolean() ?: false
-    }
-
-    override suspend fun signUp(email: String, password: String) {
-        auth.signUpWith(Email) {
-            this.email = email
-            this.password = password
+    override suspend fun checkUserExists(email: String): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val response = functions.invoke("check-user", buildJsonObject {
+                put("email", email)
+            })
+            val body = response.bodyAsText()
+            val json = Json.parseToJsonElement(body).jsonObject
+            json["exists"]?.jsonPrimitive?.content?.toBoolean() ?: false
+        } catch (e: Exception) {
+            false
         }
     }
 
-    override suspend fun signIn(email: String, password: String) {
-        auth.signInWith(Email) {
-            this.email = email
-            this.password = password
+    override suspend fun signUpWithPassword(
+        email: String,
+        password: String,
+        metadata: JsonObject?
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            auth.signUpWith(Email) {
+                this.email = email
+                this.password = password
+                metadata?.let {
+                    data = it
+                }
+            }
+            Unit
         }
     }
 
-    override suspend fun signInWithPhone(phone: String) {
-        auth.signInWith(OTP) {
-            this.phone = phone
+    override suspend fun signInWithPassword(email: String, password: String): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            auth.signInWith(Email) {
+                this.email = email
+                this.password = password
+            }
+            Unit
         }
     }
 
-    override suspend fun signInWithEmailOtp(email: String) {
-        auth.signInWith(OTP) {
-            this.email = email
-            createUser = false
+    override suspend fun signInWithPhone(phone: String): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            auth.signInWith(OTP) {
+                this.phone = phone
+            }
+            Unit
         }
     }
 
-    override suspend fun verifyPhoneOtp(phone: String, otp: String) {
-        auth.verifyPhoneOtp(
-            type = OtpType.Phone.SMS,
-            phone = phone,
-            token = otp
-        )
+    override suspend fun sendEmailOtp(
+        email: String,
+        shouldCreateUser: Boolean,
+        metadata: JsonObject?
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            auth.signInWith(OTP) {
+                this.email = email
+                createUser = shouldCreateUser
+                metadata?.let {
+                    data = it
+                }
+            }
+            Unit
+        }
     }
 
-    override suspend fun verifyEmailOtp(email: String, otp: String) {
-        auth.verifyEmailOtp(
-            type = OtpType.Email.EMAIL,
-            email = email,
-            token = otp
-        )
+    override suspend fun verifyPhoneOtp(phone: String, otp: String): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            auth.verifyPhoneOtp(
+                type = OtpType.Phone.SMS,
+                phone = phone,
+                token = otp
+            )
+            Unit
+        }
     }
 
-    override suspend fun verifyEmailSignup(email: String, otp: String) {
-        auth.verifyEmailOtp(
-            type = OtpType.Email.SIGNUP,
-            email = email,
-            token = otp
-        )
+    override suspend fun verifyOtpCode(
+        email: String,
+        code: String,
+        isSignUp: Boolean
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            val targetType = if (isSignUp) OtpType.Email.SIGNUP else OtpType.Email.MAGIC_LINK
+            try {
+                auth.verifyEmailOtp(
+                    type = targetType,
+                    email = email,
+                    token = code
+                )
+            } catch (e: Exception) {
+                auth.verifyEmailOtp(
+                    type = OtpType.Email.EMAIL,
+                    email = email,
+                    token = code
+                )
+            }
+            Unit
+        }
     }
 
-    override suspend fun signOut() {
-        auth.signOut()
+    override suspend fun signOut(): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            auth.signOut()
+            Unit
+        }
     }
 }

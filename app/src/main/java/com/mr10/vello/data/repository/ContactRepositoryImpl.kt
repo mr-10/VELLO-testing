@@ -2,17 +2,20 @@ package com.mr10.vello.data.repository
 
 import android.content.Context
 import android.provider.ContactsContract
-import com.mr10.vello.VelloApplication
 import com.mr10.vello.data.model.Contact
 import com.mr10.vello.data.model.UserProfile
-import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class ContactRepositoryImpl(private val context: Context) : ContactRepository {
-    private val postgrest by lazy { VelloApplication.supabaseClient.postgrest }
+class ContactRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val postgrest: Postgrest
+) : ContactRepository {
 
     override suspend fun getDeviceContacts(): List<Contact> {
         val contacts = mutableListOf<Contact>()

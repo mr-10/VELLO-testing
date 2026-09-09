@@ -46,6 +46,10 @@ import com.mr10.vello.data.repository.ContactRepositoryImpl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.hilt.navigation.compose.hiltViewModel
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,15 +79,11 @@ fun MainContent() {
         }
     }
 
-    val authViewModel: AuthViewModel = viewModel()
-    val chatViewModel: ChatViewModel = viewModel {
-        ChatViewModel() // This will use default parameters which now include AuthRepositoryImpl
-    }
-    val callingViewModel: CallingViewModel = viewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val chatViewModel: ChatViewModel = hiltViewModel()
+    val callingViewModel: CallingViewModel = hiltViewModel()
     val context = LocalContext.current
-    val contactViewModel: ContactViewModel = viewModel {
-        ContactViewModel(ContactRepositoryImpl(context.applicationContext))
-    }
+    val contactViewModel: ContactViewModel = hiltViewModel()
     val currentUser by authViewModel.currentUser.collectAsState()
     val userProfile by authViewModel.userProfile.collectAsState()
     val isProfileChecked by authViewModel.isProfileChecked.collectAsState()

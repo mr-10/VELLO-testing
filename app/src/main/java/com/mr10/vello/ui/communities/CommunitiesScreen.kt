@@ -30,11 +30,12 @@ import com.mr10.vello.ui.chat.ChatViewModel
 import com.mr10.vello.ui.components.UserProfileDetailBottomSheet
 import com.mr10.vello.ui.components.UserProfilePreviewDialog
 import com.mr10.vello.ui.theme.VelloPrimaryContainer
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun CommunitiesScreen(
-    viewModel: CommunitiesViewModel = viewModel(),
-    chatViewModel: ChatViewModel = viewModel(),
+    viewModel: CommunitiesViewModel = hiltViewModel(),
+    chatViewModel: ChatViewModel = hiltViewModel(),
     onNavigateToChat: (UserProfile) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
