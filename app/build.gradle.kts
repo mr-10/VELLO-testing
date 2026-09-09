@@ -15,9 +15,9 @@ android {
         applicationId = "com.mr10.vello"
         minSdk = 26
         targetSdk = 37
-        versionCode = 26
-        // v9.9.6: Phase 2 Messaging Core Implementation
-        versionName = "9.9.6"
+        versionCode = 27
+        // v9.9.7: Fix PackageInfo not found and installer issues
+        versionName = "9.9.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
