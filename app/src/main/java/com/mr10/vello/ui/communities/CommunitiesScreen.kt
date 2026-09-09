@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.mr10.vello.data.model.Community
 import com.mr10.vello.data.model.UserProfile
 import com.mr10.vello.ui.chat.ChatViewModel
 import com.mr10.vello.ui.components.UserProfileDetailBottomSheet
@@ -50,7 +51,9 @@ fun CommunitiesScreen(
             is CommunitiesUiState.Success -> {
                 CommunitiesContent(
                     profiles = state.profiles,
-                    onProfileClick = { selectedUserForPreview = it }
+                    communities = state.communities,
+                    onProfileClick = { selectedUserForPreview = it },
+                    onCommunityClick = { /* Handle community click */ }
                 )
             }
             is CommunitiesUiState.Error -> {
@@ -91,7 +94,9 @@ fun CommunitiesScreen(
 @Composable
 fun CommunitiesContent(
     profiles: List<UserProfile>,
-    onProfileClick: (UserProfile) -> Unit
+    communities: List<Community>,
+    onProfileClick: (UserProfile) -> Unit,
+    onCommunityClick: (Community) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -101,6 +106,27 @@ fun CommunitiesContent(
     ) {
         item {
             CommunitiesHeader()
+        }
+
+        if (communities.isNotEmpty()) {
+            item {
+                Text(
+                    text = "Active Communities",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp),
+                    color = Color.Gray
+                )
+            }
+
+            items(communities) { community ->
+                CommunityListItem(community = community, onClick = { onCommunityClick(community) })
+                HorizontalDivider(
+                    modifier = Modifier.padding(start = 72.dp),
+                    thickness = 0.5.dp,
+                    color = Color.LightGray.copy(alpha = 0.5f)
+                )
+            }
         }
         
         item {
@@ -119,6 +145,61 @@ fun CommunitiesContent(
                 modifier = Modifier.padding(start = 72.dp),
                 thickness = 0.5.dp,
                 color = Color.LightGray.copy(alpha = 0.5f)
+            )
+        }
+    }
+}
+
+@Composable
+fun CommunityListItem(
+    community: Community,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0xFFF0F2F5)),
+            contentAlignment = Alignment.Center
+        ) {
+            if (community.profilePictureUrl != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(community.profilePictureUrl),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Icon(
+                    Icons.Default.Groups,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Gray
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = community.name,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF111B21)
+            )
+            Text(
+                text = "${community.memberCount} members",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                maxLines = 1
             )
         }
     }

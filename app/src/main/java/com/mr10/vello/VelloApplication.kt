@@ -24,8 +24,8 @@ class VelloApplication : Application() {
         super.onCreate()
 
         supabaseClient = createSupabaseClient(
-            supabaseUrl = "https://rrfpeekydobsejyvqycz.supabase.co",
-            supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZnBlZWt5ZG9ic2VqeXZxeWN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzAxMjcsImV4cCI6MjEwMjYwNjEyN30.jD1ApBusf01FC5zBnjkjn7es35n3Mp6XB1kWgfANcpQ"
+            supabaseUrl = BuildConfig.SUPABASE_URL,
+            supabaseKey = BuildConfig.SUPABASE_KEY
         ) {
             install(Auth)
             install(Postgrest)

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.plugin.serialization)
+    alias(libs.plugins.secrets.gradle.plugin)
 }
 
 android {
@@ -13,8 +14,8 @@ android {
         minSdk = 26
         targetSdk = 37
         versionCode = 25
-        // v9.9.4: Fix chat synchronization and membership logic
-        versionName = "9.9.4"
+        // v9.9.5: Fix Supabase implementation and add community support
+        versionName = "9.9.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,6 +36,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

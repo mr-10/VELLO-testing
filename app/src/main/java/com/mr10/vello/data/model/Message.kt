@@ -10,6 +10,8 @@ data class Message(
     val chatId: String,
     @SerialName("sender_id")
     val senderId: String,
+    @SerialName("community_id")
+    val communityId: String? = null,
     val content: String,
     @SerialName("created_at")
     val created_at: String? = null,
